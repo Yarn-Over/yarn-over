@@ -13,7 +13,7 @@ const YarnOverApp = () => {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [exampleGalleryOpen, setExampleGalleryOpen] = useState(false);
   const [currentPresetExamples, setCurrentPresetExamples] = useState([]);
-  const [beginnerMode, setBeginnerMode] = useState(false);
+  const [beginnerMode, setBeginnerMode] = useState(true);
   const [wizardStep, setWizardStep] = useState(1);
   
   // Gauge calculator state
@@ -804,16 +804,16 @@ const YarnOverApp = () => {
   useEffect(() => {
     if (!showPreview || !previewCanvasRef.current) return;
     
-    const canvas = previewCanvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const canvasElement = previewCanvasRef.current;
+    const ctx = canvasElement.getContext('2d');
     const cellSize = 8; // Size of each "stitch" cell
     
     // Set canvas size
-    canvas.width = Math.min(width * cellSize, 600);
-    canvas.height = Math.max(200, canvas.sections?.length * 40 || 200);
+    canvasElement.width = Math.min(width * cellSize, 600);
+    canvasElement.height = Math.max(200, canvas.length * 40 || 200);
     
     // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     
     if (canvas.length === 0) return;
     
@@ -826,10 +826,10 @@ const YarnOverApp = () => {
       
       // Draw section background
       ctx.fillStyle = section.color;
-      ctx.fillRect(0, yOffset, canvas.width, sectionHeight);
+      ctx.fillRect(0, yOffset, canvasElement.width, sectionHeight);
       
       // Draw texture pattern
-      drawTexturePattern(ctx, section.texturePattern, 0, yOffset, canvas.width, sectionHeight, cellSize);
+      drawTexturePattern(ctx, section.texturePattern, 0, yOffset, canvasElement.width, sectionHeight, cellSize);
       
       yOffset += sectionHeight;
     });
@@ -1076,7 +1076,7 @@ const YarnOverApp = () => {
                   : 'bg-white hover:bg-gray-100 text-gray-700 border-2 border-gray-300'
               }`}
             >
-              {beginnerMode ? '✨ Step-by-Step Mode' : '🚀 Switch to Step-by-Step'}
+              {beginnerMode ? '✨ Step-by-Step Mode (Current)' : '🚀 Try Advanced Mode'}
             </button>
           </div>
           <p className="text-purple-700 text-base md:text-lg">
@@ -1120,33 +1120,126 @@ const YarnOverApp = () => {
             {wizardStep === 1 && (
               <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6">What would you like to make?</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {['scarf_standard', 'cowl', 'beanie', 'dishcloth', 'baby_blanket', 'bookmark'].map((presetKey) => (
-                    <button
-                      key={presetKey}
-                      onClick={() => {
-                        handlePresetChange(presetKey);
-                        setWizardStep(2);
-                      }}
-                      className="p-6 border-3 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-center"
-                    >
-                      <div className="text-5xl mb-3">
-                        {presetKey === 'scarf_standard' && '🧣'}
-                        {presetKey === 'cowl' && '⭕'}
-                        {presetKey === 'beanie' && '🧢'}
-                        {presetKey === 'dishcloth' && '🧽'}
-                        {presetKey === 'baby_blanket' && '👶'}
-                        {presetKey === 'bookmark' && '📖'}
-                      </div>
-                      <div className="font-bold text-lg text-gray-800">
-                        {projectPresets[presetKey].name}
-                      </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        {projectPresets[presetKey].width}" × {projectPresets[presetKey].length}"
-                      </div>
-                    </button>
-                  ))}
+                
+                {/* Scarves & Wraps */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🧣 Scarves & Wraps</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['scarf_standard', 'scarf_kids', 'scarf_extra_long', 'scarf_infinity', 'shawl_small', 'shawl_large'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Cowls */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">⭕ Cowls</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['cowl', 'cowl_chunky', 'cowl_long'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hats & Accessories */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🧢 Hats & Accessories</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['beanie', 'beanie_brim', 'headband', 'fingerless_gloves'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bags */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🛍️ Bags</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['market_bag', 'tote_bag'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tech Accessories */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">📱 Tech Accessories</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['phone_cozy', 'tablet_cozy', 'laptop_sleeve'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Home Goods */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🏠 Home Goods</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['dishcloth', 'potholder', 'coaster', 'coaster_set', 'placemat', 'table_runner', 'mug_cozy'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Blankets & More */}
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🛋️ Blankets & More</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {['baby_blanket', 'throw_blanket', 'bookmark'].map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => { handlePresetChange(key); setWizardStep(2); }}
+                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                      >
+                        <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
+                        <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <button
                   onClick={() => setBeginnerMode(false)}
                   className="mt-6 text-purple-600 hover:text-purple-800 text-sm"
@@ -1253,8 +1346,8 @@ const YarnOverApp = () => {
                 </div>
 
                 {/* Stitch Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  {filteredStitches.slice(0, 8).map((stitch) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-h-[600px] overflow-y-auto">
+                  {filteredStitches.map((stitch) => (
                     <button
                       key={stitch.id}
                       onClick={() => {

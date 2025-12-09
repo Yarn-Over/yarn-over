@@ -1184,28 +1184,48 @@ const YarnOverApp = () => {
     const ctx = canvasElement.getContext('2d');
     const cellSize = 8; // Size of each "stitch" cell
     
+    // Calculate total height based on sections
+    const nonNullSections = canvas.filter(s => s !== null);
+    const totalHeight = nonNullSections.reduce((sum, section) => {
+      return sum + (section.rowRepeat * 10); // Increased from 5 to 10 for visibility
+    }, 0);
+    
     // Set canvas size
     canvasElement.width = Math.min(width * cellSize, 600);
-    canvasElement.height = Math.max(200, canvas.length * 40 || 200);
+    canvasElement.height = Math.max(300, totalHeight); // Minimum 300px tall
     
     // Clear canvas
     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     
-    if (canvas.length === 0) return;
+    if (nonNullSections.length === 0) {
+      // Draw placeholder
+      ctx.fillStyle = '#f3f4f6';
+      ctx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Add stitches to see preview', canvasElement.width / 2, canvasElement.height / 2);
+      return;
+    }
     
     let yOffset = 0;
     
-    canvas.forEach((section) => {
-      if (!section) return;
-      
-      const sectionHeight = section.rowRepeat * 5;
+    nonNullSections.forEach((section) => {
+      const sectionHeight = section.rowRepeat * 10; // Increased from 5 to 10
       
       // Draw section background
-      ctx.fillStyle = section.color;
+      ctx.fillStyle = section.color || '#E8F4F8';
       ctx.fillRect(0, yOffset, canvasElement.width, sectionHeight);
       
-      // Draw texture pattern
-      drawTexturePattern(ctx, section.texturePattern, 0, yOffset, canvasElement.width, sectionHeight, cellSize);
+      // Draw texture pattern if exists
+      if (section.texturePattern) {
+        drawTexturePattern(ctx, section.texturePattern, 0, yOffset, canvasElement.width, sectionHeight, cellSize);
+      }
+      
+      // Draw section label
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(section.name, 10, yOffset + 20);
       
       yOffset += sectionHeight;
     });
@@ -2654,16 +2674,18 @@ const YarnOverApp = () => {
                         </div>
                       </div>
                       {/* Video Tutorial Button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openVideoModal(stitch);
-                        }}
-                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all shadow-lg hover:scale-110 z-20"
-                        title="Watch tutorial"
-                      >
-                        <Play size={16} fill="white" />
-                      </button>
+                      {stitch.videoUrl && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openVideoModal(stitch);
+                          }}
+                          className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all shadow-lg hover:scale-110 z-20"
+                          title="Watch tutorial"
+                        >
+                          <Play size={16} fill="white" />
+                        </button>
+                      )}
                     </div>
                   );
                 })}
@@ -2830,7 +2852,7 @@ const YarnOverApp = () => {
                             )}
                           </div>
                           <div className="flex gap-2 flex-shrink-0">
-                            {section && (
+                            {section && section.videoUrl && (
                               <button
                                 onClick={() => openVideoModal(section)}
                                 className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"

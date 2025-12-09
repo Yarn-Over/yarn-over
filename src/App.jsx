@@ -1000,47 +1000,41 @@ const YarnOverApp = () => {
     
     let pattern = `${projectName}\n`;
     pattern += `${'='.repeat(projectName.length)}\n\n`;
-    pattern += `PROJECT TYPE: ${projectPresets[selectedPreset].name}\n\n`;
-    pattern += `MATERIALS:\n`;
-    pattern += `Yarn: ${yarnWeights[yarnWeight].name} (Weight ${yarnWeights[yarnWeight].number})\n`;
-    pattern += `Estimated Yardage: ${totalYardageWithBuffer} yards (includes 15% buffer)\n`;
-    pattern += `Popular Brands: ${yarnWeights[yarnWeight].popularBrands.join(', ')}\n`;
+    pattern += `A ${projectPresets[selectedPreset].name} • ${desiredWidth}" × ${desiredLength}"\n\n`;
+    
+    pattern += `WHAT YOU'LL NEED:\n`;
+    pattern += `• Yarn: ${yarnWeights[yarnWeight].name} (${totalYardageWithBuffer} yards)\n`;
+    pattern += `  Popular brands: ${yarnWeights[yarnWeight].popularBrands.slice(0, 2).join(', ')}\n`;
     if (selectedCraft === 'knit') {
-      pattern += `Needles: ${yarnWeights[yarnWeight].needles}\n`;
+      pattern += `• Needles: ${yarnWeights[yarnWeight].needles}\n`;
     } else {
-      pattern += `Hook: ${yarnWeights[yarnWeight].hooks}\n`;
+      pattern += `• Hook: ${yarnWeights[yarnWeight].hooks}\n`;
     }
-    pattern += `\nYARN SUBSTITUTES (if needed):\n`;
-    yarnWeights[yarnWeight].substitutes.forEach((sub) => {
-      pattern += `• ${sub}\n`;
-    });
-    pattern += `\nSPECIFICATIONS:\n`;
-    pattern += `Dimensions: ${desiredWidth}" wide × ${desiredLength}" long\n`;
-    pattern += `Cast on: ${estimatedStitches} stitches\n`;
-    pattern += `Estimated rows: ${estimatedRows}\n`;
-    pattern += `Gauge: ${stitchesPerInch} sts × ${rowsPerInch} rows per inch\n\n`;
+    pattern += `• Gauge: ${stitchesPerInch} sts × ${rowsPerInch} rows per inch\n\n`;
+    
+    pattern += `CAN'T FIND THIS YARN?\n`;
+    pattern += `Try: ${yarnWeights[yarnWeight].substitutes.slice(0, 2).join(' OR ')}\n\n`;
+    
+    pattern += `LET'S GET STARTED:\n`;
+    pattern += `Cast on ${estimatedStitches} stitches (this gives you your ${desiredWidth}" width)\n\n`;
     
     canvas.forEach((section, idx) => {
       if (section) {
-        pattern += `SECTION ${idx + 1}: ${section.name}\n`;
-        pattern += `${'-'.repeat(40)}\n`;
-        pattern += `Difficulty: ${section.difficulty}\n`;
-        pattern += `Stitch multiple: ${section.stitchMultiple}\n`;
-        pattern += `Notes: ${section.description}\n\n`;
-        pattern += `Instructions:\n`;
-        section.pattern.forEach((row, rowIdx) => {
-          pattern += `${row}\n`;
+        pattern += `${idx + 1}. ${section.name} (${section.difficulty})\n`;
+        section.pattern.forEach((row) => {
+          pattern += `   ${row}\n`;
         });
-        pattern += `\nRepeat these ${section.rowRepeat} rows for desired section length\n\n`;
+        pattern += `   Repeat these ${section.rowRepeat} rows until section measures desired length\n\n`;
       }
     });
     
-    pattern += `\nFINISHING:\n`;
-    pattern += `Bind off all stitches\n`;
-    pattern += `Weave in ends\n`;
-    pattern += `Block to measurements (${desiredWidth}" × ${desiredLength}")\n`;
-    pattern += `\n${'-'.repeat(40)}\n`;
-    pattern += `Pattern created with Yarn Over - yarnover.app\n`;
+    pattern += `FINISHING UP:\n`;
+    pattern += `• Bind off all stitches loosely\n`;
+    pattern += `• Weave in any loose ends with a tapestry needle\n`;
+    pattern += `• Block gently to ${desiredWidth}" × ${desiredLength}" (optional but recommended!)\n\n`;
+    pattern += `${'-'.repeat(50)}\n`;
+    pattern += `Created with Yarn Over • yarnover.app\n`;
+    pattern += `Happy making! 🧶\n`;
     
     return pattern;
   };
@@ -1056,12 +1050,12 @@ const YarnOverApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 p-2 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-slate-100 p-2 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-4 mb-2">
-            <h1 className="text-3xl md:text-5xl font-bold text-purple-900">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-4 mb-3">
+            <h1 className="text-3xl md:text-5xl font-bold text-slate-700">
               🧶 Yarn Over
             </h1>
             {/* Mode Toggle */}
@@ -1079,9 +1073,34 @@ const YarnOverApp = () => {
               {beginnerMode ? '✨ Step-by-Step Mode (Current)' : '🚀 Try Advanced Mode'}
             </button>
           </div>
-          <p className="text-purple-700 text-base md:text-lg">
-            {beginnerMode ? 'We\'ll guide you through each step!' : 'Design Your Dream Pattern'}
-          </p>
+          
+          {/* Hero Copy */}
+          <div className="max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl font-semibold text-slate-600 mb-3">
+              {beginnerMode ? 'We\'ll guide you through each step!' : 'Design Your Dream Pattern in Minutes'}
+            </p>
+            <p className="text-base md:text-lg text-gray-600 mb-4">
+              Create custom knitting & crochet patterns with drag-and-drop stitches, automatic yardage calculation, and professional pattern downloads. No experience needed!
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+              <div className="flex items-center gap-2 text-gray-700">
+                <span className="text-green-600 font-bold">✓</span>
+                <span>22 Stitches with Videos</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <span className="text-green-600 font-bold">✓</span>
+                <span>33 Project Presets</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <span className="text-green-600 font-bold">✓</span>
+                <span>Smart Yarn Calculator</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <span className="text-green-600 font-bold">✓</span>
+                <span>Instant Download</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Mode Toggle */}
@@ -1123,13 +1142,13 @@ const YarnOverApp = () => {
                 
                 {/* Scarves & Wraps */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🧣 Scarves & Wraps</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">🧣 Scarves & Wraps</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['scarf_standard', 'scarf_kids', 'scarf_extra_long', 'scarf_infinity', 'shawl_small', 'shawl_large'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1140,13 +1159,13 @@ const YarnOverApp = () => {
 
                 {/* Cowls */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">⭕ Cowls</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">⭕ Cowls</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['cowl', 'cowl_chunky', 'cowl_long'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1157,13 +1176,13 @@ const YarnOverApp = () => {
 
                 {/* Hats & Accessories */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🧢 Hats & Accessories</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">🧢 Hats & Accessories</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['beanie', 'beanie_brim', 'headband', 'fingerless_gloves'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1174,13 +1193,13 @@ const YarnOverApp = () => {
 
                 {/* Bags */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🛍️ Bags</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">🛍️ Bags</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['market_bag', 'tote_bag'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1191,13 +1210,13 @@ const YarnOverApp = () => {
 
                 {/* Tech Accessories */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">📱 Tech Accessories</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">📱 Tech Accessories</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['phone_cozy', 'tablet_cozy', 'laptop_sleeve'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1208,13 +1227,13 @@ const YarnOverApp = () => {
 
                 {/* Home Goods */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🏠 Home Goods</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">🏠 Home Goods</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['dishcloth', 'potholder', 'coaster', 'coaster_set', 'placemat', 'table_runner', 'mug_cozy'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1225,13 +1244,13 @@ const YarnOverApp = () => {
 
                 {/* Blankets & More */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-purple-800 mb-3">🛋️ Blankets & More</h3>
+                  <h3 className="text-lg font-semibold text-slate-600 mb-3">🛋️ Blankets & More</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {['baby_blanket', 'throw_blanket', 'bookmark'].map((key) => (
                       <button
                         key={key}
                         onClick={() => { handlePresetChange(key); setWizardStep(2); }}
-                        className="p-4 border-2 border-gray-200 hover:border-purple-500 rounded-xl transition-all hover:shadow-lg text-left"
+                        className="p-4 border-2 border-gray-200 hover:border-slate-400 rounded-xl transition-all hover:shadow-lg text-left"
                       >
                         <div className="font-bold text-gray-800">{projectPresets[key].name}</div>
                         <div className="text-sm text-gray-600">{projectPresets[key].width}" × {projectPresets[key].length}"</div>
@@ -1242,7 +1261,7 @@ const YarnOverApp = () => {
 
                 <button
                   onClick={() => setBeginnerMode(false)}
-                  className="mt-6 text-purple-600 hover:text-purple-800 text-sm"
+                  className="mt-6 text-slate-500 hover:text-slate-600 text-sm"
                 >
                   ← Back to Advanced Mode
                 </button>
@@ -1264,8 +1283,8 @@ const YarnOverApp = () => {
                       }}
                       className={`w-full p-4 rounded-xl border-3 text-left transition-all ${
                         yarnWeight === key 
-                          ? 'border-purple-500 bg-purple-50' 
-                          : 'border-gray-200 hover:border-purple-300'
+                          ? 'border-slate-400 bg-slate-50' 
+                          : 'border-gray-200 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-center gap-4">
@@ -1304,7 +1323,7 @@ const YarnOverApp = () => {
                   </button>
                   <button
                     onClick={() => setWizardStep(3)}
-                    className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+                    className="flex-1 px-6 py-3 bg-slate-500 hover:bg-slate-600 text-white rounded-lg font-semibold transition-colors"
                   >
                     Next: Choose Stitches →
                   </button>
@@ -1326,7 +1345,7 @@ const YarnOverApp = () => {
                       onClick={() => setSelectedCategory(diff)}
                       className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                         selectedCategory === diff
-                          ? 'bg-purple-600 text-white'
+                          ? 'bg-slate-500 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
                     >
@@ -1337,7 +1356,7 @@ const YarnOverApp = () => {
                     onClick={() => setSelectedCategory('all')}
                     className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                       selectedCategory === 'all'
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-slate-500 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
@@ -1360,7 +1379,7 @@ const YarnOverApp = () => {
                           setCanvas([...canvas, stitch]);
                         }
                       }}
-                      className="p-4 border-2 border-gray-200 hover:border-purple-400 rounded-xl text-left transition-all hover:shadow-lg"
+                      className="p-4 border-2 border-gray-200 hover:border-slate-300 rounded-xl text-left transition-all hover:shadow-lg"
                       style={{ backgroundColor: stitch.color }}
                     >
                       <div className="flex items-center gap-3">
@@ -1377,8 +1396,8 @@ const YarnOverApp = () => {
 
                 {/* Current Pattern Preview */}
                 {canvas.length > 0 && (
-                  <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4 mb-6">
-                    <h3 className="font-bold text-purple-900 mb-2">Your Pattern ({canvas.length} sections):</h3>
+                  <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 mb-6">
+                    <h3 className="font-bold text-slate-700 mb-2">Your Pattern ({canvas.length} sections):</h3>
                     <div className="space-y-2">
                       {canvas.map((section, idx) => (
                         section && (
@@ -1410,7 +1429,7 @@ const YarnOverApp = () => {
                     disabled={canvas.length === 0}
                     className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-colors ${
                       canvas.length > 0
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                        ? 'bg-slate-500 hover:bg-slate-600 text-white'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >
@@ -1465,7 +1484,7 @@ const YarnOverApp = () => {
                     onClick={() => {
                       setBeginnerMode(false);
                     }}
-                    className="text-purple-600 hover:text-purple-800 font-semibold"
+                    className="text-slate-500 hover:text-slate-600 font-semibold"
                   >
                     Try Advanced Mode for more features →
                   </button>
@@ -1488,7 +1507,7 @@ const YarnOverApp = () => {
             <select
               value={selectedPreset}
               onChange={(e) => handlePresetChange(e.target.value)}
-              className="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none bg-white text-base"
+              className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-slate-400 focus:outline-none bg-white text-base"
             >
               <option value="custom">{projectPresets.custom.name}</option>
               
@@ -1547,7 +1566,7 @@ const YarnOverApp = () => {
                 <option value="bookmark">{projectPresets.bookmark.name}</option>
               </optgroup>
             </select>
-            <p className="text-xs text-purple-600 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               💡 Select any preset and customize dimensions in the gauge calculator below
             </p>
           </div>
@@ -1557,7 +1576,7 @@ const YarnOverApp = () => {
             <div className="mb-4">
               <button
                 onClick={openExampleGallery}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all shadow-md"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-slate-400 to-slate-400 text-white rounded-lg hover:from-slate-500 hover:to-slate-500 transition-all shadow-md"
               >
                 <Eye size={20} />
                 <span className="font-semibold">View Example Projects ({projectPresets[selectedPreset].examples.length})</span>
@@ -1577,7 +1596,7 @@ const YarnOverApp = () => {
                 type="text"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-purple-200 rounded-lg focus:border-purple-500 focus:outline-none"
+                className="w-full px-4 py-2 border-2 border-slate-200 rounded-lg focus:border-slate-400 focus:outline-none"
               />
             </div>
             <div>
@@ -1591,7 +1610,7 @@ const YarnOverApp = () => {
                   setCanvas([]);
                   setSelectedCategory('all');
                 }}
-                className="w-full px-4 py-2 border-2 border-purple-200 rounded-lg focus:border-purple-500 focus:outline-none"
+                className="w-full px-4 py-2 border-2 border-slate-200 rounded-lg focus:border-slate-400 focus:outline-none"
               >
                 <option value="knit">Knitting</option>
                 <option value="crochet">Crochet</option>
@@ -1609,9 +1628,9 @@ const YarnOverApp = () => {
         </div>
 
         {/* Gauge Calculator */}
-        <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl shadow-xl p-4 md:p-6 mb-6">
+        <div className="bg-gradient-to-r from-slate-100 to-slate-100 rounded-2xl shadow-xl p-4 md:p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
-            <Ruler className="text-purple-700" size={24} />
+            <Ruler className="text-slate-600" size={24} />
             <h3 className="text-lg font-bold text-gray-800">Gauge Calculator & Dimensions</h3>
           </div>
 
@@ -1623,7 +1642,7 @@ const YarnOverApp = () => {
               </label>
               <button
                 onClick={() => alert('🧶 YARN WEIGHT GUIDE\n\nYarn weight determines how thick your yarn is, which affects:\n\n• What size needles/hooks to use\n• How many stitches per inch (gauge)\n• How your finished project will look\n\nFor example:\n• Lace yarn = tiny needles, 7+ stitches/inch, delicate fabric\n• Bulky yarn = large needles, 3-4 stitches/inch, thick & cozy\n\nThe app auto-fills recommended needle sizes and typical gauge when you select your yarn weight. You can always adjust if your personal gauge is different!\n\n💡 TIP: Always knit a gauge swatch to check your personal tension!')}
-                className="text-purple-600 hover:text-purple-800 transition-colors"
+                className="text-slate-500 hover:text-slate-600 transition-colors"
                 title="Learn about yarn weights"
               >
                 <Info size={20} />
@@ -1632,7 +1651,7 @@ const YarnOverApp = () => {
             <select
               value={yarnWeight}
               onChange={(e) => handleYarnWeightChange(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none bg-white text-base font-medium"
+              className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-slate-400 focus:outline-none bg-white text-base font-medium"
             >
               {Object.entries(yarnWeights).map(([key, yarn]) => (
                 <option key={key} value={key}>
@@ -1644,14 +1663,14 @@ const YarnOverApp = () => {
             {/* Comprehensive Yarn Info Section */}
             <div className="mt-3 space-y-3">
               {/* Visual Thickness Chart */}
-              <div className="p-4 bg-white rounded-lg border border-purple-200">
+              <div className="p-4 bg-white rounded-lg border border-slate-200">
                 <h4 className="font-semibold text-gray-800 text-sm mb-3">📊 Yarn Thickness Comparison</h4>
                 <div className="space-y-2">
                   {Object.entries(yarnWeights).map(([key, yarn]) => (
                     <div 
                       key={key}
                       className={`flex items-center gap-3 p-2 rounded ${
-                        yarnWeight === key ? 'bg-purple-100 border-2 border-purple-400' : 'bg-gray-50'
+                        yarnWeight === key ? 'bg-slate-100 border-2 border-slate-300' : 'bg-gray-50'
                       }`}
                     >
                       <div className="flex items-center justify-center w-16 text-xs font-medium text-gray-600">
@@ -1659,7 +1678,7 @@ const YarnOverApp = () => {
                       </div>
                       <div className="flex-1">
                         <div 
-                          className="bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+                          className="bg-gradient-to-r from-slate-300 to-pink-400 rounded-full"
                           style={{ 
                             height: `${yarn.thickness * 4}px`,
                             width: `${Math.min(yarn.thickness * 30, 100)}%`
@@ -1675,10 +1694,10 @@ const YarnOverApp = () => {
               </div>
 
               {/* Tool Size & Gauge */}
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+              <div className="p-4 bg-gradient-to-r from-slate-50 to-slate-50 rounded-lg border border-slate-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <span className="font-semibold text-purple-900">
+                    <span className="font-semibold text-slate-700">
                       {selectedCraft === 'knit' ? '🪡 Needle Size:' : '🪝 Hook Size:'}
                     </span>
                     <div className="text-gray-700 font-medium mt-1">
@@ -1686,7 +1705,7 @@ const YarnOverApp = () => {
                     </div>
                   </div>
                   <div>
-                    <span className="font-semibold text-purple-900">📏 Typical Gauge:</span>
+                    <span className="font-semibold text-slate-700">📏 Typical Gauge:</span>
                     <div className="text-gray-700 font-medium mt-1">
                       {yarnWeights[yarnWeight].gauge}
                     </div>
@@ -1747,7 +1766,7 @@ const YarnOverApp = () => {
                       href={yarnWeights[yarnWeight].shoppingLinks.knitpicks}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-center text-sm font-semibold transition-colors"
+                      className="px-3 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg text-center text-sm font-semibold transition-colors"
                     >
                       KnitPicks
                     </a>
@@ -1775,8 +1794,8 @@ const YarnOverApp = () => {
               </div>
 
               {/* Auto-Fill Notice */}
-              <div className="p-3 bg-purple-100 rounded-lg border border-purple-300">
-                <p className="text-xs text-purple-900 font-medium text-center">
+              <div className="p-3 bg-slate-100 rounded-lg border border-slate-300">
+                <p className="text-xs text-slate-700 font-medium text-center">
                   ✨ Gauge has been auto-populated! Adjust in the fields below if your personal gauge differs.
                 </p>
               </div>
@@ -1798,7 +1817,7 @@ const YarnOverApp = () => {
                 }}
                 min="1"
                 max="15"
-                className="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none bg-white"
+                className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-slate-400 focus:outline-none bg-white"
               />
             </div>
             <div>
@@ -1812,7 +1831,7 @@ const YarnOverApp = () => {
                 onChange={(e) => setRowsPerInch(parseFloat(e.target.value))}
                 min="1"
                 max="20"
-                className="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none bg-white"
+                className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-slate-400 focus:outline-none bg-white"
               />
             </div>
             <div>
@@ -1830,7 +1849,7 @@ const YarnOverApp = () => {
                 }}
                 min="4"
                 max="100"
-                className="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none bg-white"
+                className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-slate-400 focus:outline-none bg-white"
               />
             </div>
             <div>
@@ -1846,7 +1865,7 @@ const YarnOverApp = () => {
                 }}
                 min="4"
                 max="200"
-                className="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none bg-white"
+                className="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:border-slate-400 focus:outline-none bg-white"
               />
             </div>
           </div>
@@ -1854,23 +1873,23 @@ const YarnOverApp = () => {
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-sm">
               <div>
                 <span className="text-gray-600">Project Size:</span>
-                <div className="font-bold text-purple-900">{desiredWidth}" × {desiredLength}"</div>
+                <div className="font-bold text-slate-700">{desiredWidth}" × {desiredLength}"</div>
               </div>
               <div>
                 <span className="text-gray-600">Cast On:</span>
-                <div className="font-bold text-purple-900">{estimatedStitches} sts</div>
+                <div className="font-bold text-slate-700">{estimatedStitches} sts</div>
               </div>
               <div>
                 <span className="text-gray-600">Est. Rows:</span>
-                <div className="font-bold text-purple-900">{estimatedRows}</div>
+                <div className="font-bold text-slate-700">{estimatedRows}</div>
               </div>
               <div>
                 <span className="text-gray-600">Total Stitches:</span>
-                <div className="font-bold text-purple-900">{totalStitches.toLocaleString()}</div>
+                <div className="font-bold text-slate-700">{totalStitches.toLocaleString()}</div>
               </div>
               <div>
                 <span className="text-gray-600">Current Width:</span>
-                <div className="font-bold text-purple-900">{width} sts ({widthInInches.toFixed(1)}")</div>
+                <div className="font-bold text-slate-700">{width} sts ({widthInInches.toFixed(1)}")</div>
               </div>
               <div className="bg-green-100 px-2 py-1 rounded">
                 <span className="text-gray-600">Yarn Needed:</span>
@@ -1885,12 +1904,12 @@ const YarnOverApp = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 sticky top-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl md:text-2xl font-bold text-purple-900">
+                <h2 className="text-xl md:text-2xl font-bold text-slate-700">
                   Stitch Library
                 </h2>
                 <div className="flex gap-2">
                   <Youtube size={24} className="text-red-600" title="Video tutorials available!" />
-                  <Palette size={24} className="text-purple-600" />
+                  <Palette size={24} className="text-slate-500" />
                 </div>
               </div>
               
@@ -1902,7 +1921,7 @@ const YarnOverApp = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-purple-200 rounded-lg focus:border-purple-500 focus:outline-none text-sm"
+                  className="w-full px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-slate-400 focus:outline-none text-sm"
                 >
                   <option value="all">{categories.all}</option>
                   <optgroup label="By Difficulty">
@@ -1940,25 +1959,44 @@ const YarnOverApp = () => {
                   return (
                     <div
                       key={stitch.id}
-                      className="relative p-3 rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:shadow-lg transition-all"
-                      style={{ backgroundColor: stitch.color }}
+                      className="relative p-3 rounded-xl border-2 border-gray-200 hover:border-slate-300 hover:shadow-lg transition-all bg-white overflow-hidden"
                     >
+                      {/* Visual Stitch Pattern Background */}
+                      <div 
+                        className="absolute top-0 right-0 w-20 h-20 opacity-20"
+                        style={{ 
+                          backgroundColor: stitch.color,
+                          clipPath: 'polygon(100% 0, 0 0, 100% 100%)'
+                        }}
+                      />
+                      
                       <div
                         draggable
                         onDragStart={() => handleDragStart(stitch)}
-                        className="cursor-move"
+                        className="cursor-move relative z-10"
                       >
                         <div className="flex items-start gap-2 mb-2">
                           <GripVertical size={18} className="text-gray-400 flex-shrink-0 mt-1" />
-                          <span className="text-2xl flex-shrink-0">{stitch.symbol}</span>
+                          
+                          {/* Larger, more prominent stitch symbol */}
+                          <div 
+                            className="w-12 h-12 flex items-center justify-center text-3xl flex-shrink-0 rounded-lg"
+                            style={{ 
+                              backgroundColor: stitch.color,
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                            }}
+                          >
+                            {stitch.symbol}
+                          </div>
+                          
                           <div className="flex-1 min-w-0">
                             <div className="font-bold text-gray-800 text-sm">{stitch.name}</div>
-                            <div className="text-xs text-gray-600">{stitch.description}</div>
+                            <div className="text-xs text-gray-600 line-clamp-2">{stitch.description}</div>
                             <div className="flex gap-2 mt-1 flex-wrap">
                               <span className={`text-xs px-2 py-0.5 rounded border ${difficultyColors[stitch.difficulty]}`}>
                                 {difficultyIcons[stitch.difficulty]} {stitch.difficulty}
                               </span>
-                              <span className="text-xs px-2 py-0.5 bg-white/60 rounded">
+                              <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded border border-gray-300">
                                 ×{stitch.stitchMultiple}
                               </span>
                             </div>
@@ -1971,7 +2009,7 @@ const YarnOverApp = () => {
                           e.stopPropagation();
                           openVideoModal(stitch);
                         }}
-                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all shadow-lg hover:scale-110"
+                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all shadow-lg hover:scale-110 z-20"
                         title="Watch tutorial"
                       >
                         <Play size={16} fill="white" />
@@ -1990,12 +2028,12 @@ const YarnOverApp = () => {
               <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <Eye size={24} className="text-purple-600" />
+                    <Eye size={24} className="text-slate-500" />
                     <h3 className="text-lg font-bold text-gray-800">Visual Preview</h3>
                   </div>
                   <button
                     onClick={() => setShowPreview(!showPreview)}
-                    className="text-sm text-purple-600 hover:text-purple-800"
+                    className="text-sm text-slate-500 hover:text-slate-600"
                   >
                     Hide Preview
                   </button>
@@ -2011,12 +2049,12 @@ const YarnOverApp = () => {
 
             <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                <h2 className="text-xl md:text-2xl font-bold text-purple-900">
+                <h2 className="text-xl md:text-2xl font-bold text-slate-700">
                   Your Pattern
                 </h2>
                 <button
                   onClick={addSection}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 transition-colors text-sm"
                 >
                   <Plus size={18} />
                   Add Section
@@ -2057,8 +2095,8 @@ const YarnOverApp = () => {
                         onDrop={() => handleDrop(index)}
                         className={`p-4 md:p-6 rounded-xl border-4 border-dashed transition-all ${
                           section
-                            ? 'border-purple-400 shadow-lg'
-                            : 'border-gray-300 hover:border-purple-300'
+                            ? 'border-slate-300 shadow-lg'
+                            : 'border-gray-300 hover:border-slate-300'
                         }`}
                         style={section ? { backgroundColor: section.color } : {}}
                       >
@@ -2130,7 +2168,7 @@ const YarnOverApp = () => {
             {canvas.some(s => s !== null) && (
               <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                  <h2 className="text-xl md:text-2xl font-bold text-purple-900">
+                  <h2 className="text-xl md:text-2xl font-bold text-slate-700">
                     Generated Pattern
                   </h2>
                   <button
@@ -2153,7 +2191,7 @@ const YarnOverApp = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-gray-600 text-xs md:text-sm space-y-2">
-          <p className="font-bold text-purple-900 text-base">🎉 Complete Pattern Design System</p>
+          <p className="font-bold text-slate-700 text-base">🎉 Complete Pattern Design System</p>
           <p>💡 Drag stitches from the library to build your pattern</p>
           <p>📏 Choose from <strong>33 preset sizes</strong> including scarves, cowls, hats, bags, tech cozies, home goods & more!</p>
           <p>🧶 <strong>Comprehensive Yarn Helper:</strong> Visual thickness chart • Yardage calculator • Shopping links • Substitution guide</p>
@@ -2173,7 +2211,7 @@ const YarnOverApp = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-slate-500 to-slate-500 p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Youtube className="text-white" size={28} />
                   <div>
@@ -2246,7 +2284,7 @@ const YarnOverApp = () => {
                     }
                     closeVideoModal();
                   }}
-                  className="mt-4 w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                  className="mt-4 w-full px-6 py-3 bg-slate-500 text-white rounded-lg hover:bg-slate-600 transition-colors font-semibold"
                 >
                   Add This Stitch to My Pattern
                 </button>
@@ -2266,7 +2304,7 @@ const YarnOverApp = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6">
+              <div className="bg-gradient-to-r from-slate-500 to-slate-500 p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-white font-bold text-2xl">{projectPresets[selectedPreset].name} Gallery</h3>
@@ -2293,10 +2331,10 @@ const YarnOverApp = () => {
                     {currentPresetExamples.map((example) => (
                       <div 
                         key={example.id}
-                        className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-purple-200 hover:border-purple-400 transition-all"
+                        className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-slate-300 transition-all"
                       >
                         {/* Project Image/Emoji */}
-                        <div className="bg-gradient-to-br from-purple-100 to-pink-100 h-48 flex items-center justify-center text-8xl">
+                        <div className="bg-gradient-to-br from-slate-100 to-slate-100 h-48 flex items-center justify-center text-8xl">
                           {example.emoji}
                         </div>
                         
@@ -2305,9 +2343,9 @@ const YarnOverApp = () => {
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <h4 className="font-bold text-lg text-gray-800">{example.title}</h4>
-                              <p className="text-sm text-purple-600">by {example.user}</p>
+                              <p className="text-sm text-slate-500">by {example.user}</p>
                             </div>
-                            <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                            <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-semibold">
                               ⏱️ {example.time}
                             </span>
                           </div>
@@ -2339,7 +2377,7 @@ const YarnOverApp = () => {
                           {/* Action Button */}
                           {example.user === 'Kate (You)' ? (
                             <button 
-                              className="mt-4 w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+                              className="mt-4 w-full px-4 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 transition-colors font-semibold"
                               onClick={() => {
                                 closeExampleGallery();
                               }}
@@ -2348,7 +2386,7 @@ const YarnOverApp = () => {
                             </button>
                           ) : (
                             <button 
-                              className="mt-4 w-full px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-colors font-semibold"
+                              className="mt-4 w-full px-4 py-2 bg-gradient-to-r from-slate-400 to-slate-400 text-white rounded-lg hover:from-slate-500 hover:to-slate-500 transition-colors font-semibold"
                               onClick={() => alert('Upload feature coming soon! You\'ll be able to share photos and details of your finished projects.')}
                             >
                               📸 Upload Your Project
@@ -2361,13 +2399,13 @@ const YarnOverApp = () => {
                 )}
                 
                 {/* Community Upload Section */}
-                <div className="mt-6 p-6 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl border-2 border-dashed border-purple-300">
+                <div className="mt-6 p-6 bg-gradient-to-r from-slate-100 to-slate-100 rounded-xl border-2 border-dashed border-slate-300">
                   <h4 className="font-bold text-lg text-gray-800 mb-2">📸 Share Your Creation!</h4>
                   <p className="text-gray-600 text-sm mb-4">
                     Made a {projectPresets[selectedPreset].name}? Upload your photo and inspire others!
                   </p>
                   <button 
-                    className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all shadow-lg font-semibold"
+                    className="px-6 py-3 bg-gradient-to-r from-slate-400 to-slate-400 text-white rounded-lg hover:from-slate-500 hover:to-slate-500 transition-all shadow-lg font-semibold"
                     onClick={() => alert('🎉 Upload feature coming soon!\n\nYou\'ll be able to:\n• Upload project photos\n• Share your pattern modifications\n• Add yarn & time details\n• Inspire other makers!')}
                   >
                     Upload Your Project

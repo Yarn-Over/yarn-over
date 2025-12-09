@@ -19,7 +19,7 @@ const YarnOverApp = () => {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [exampleGalleryOpen, setExampleGalleryOpen] = useState(false);
   const [currentPresetExamples, setCurrentPresetExamples] = useState([]);
-  const [beginnerMode, setBeginnerMode] = useState(true);
+  const [beginnerMode, setBeginnerMode] = useState(false); // Start in Advanced Mode
   const [wizardStep, setWizardStep] = useState(1);
   
   // Pattern Builder state
@@ -1394,108 +1394,206 @@ const YarnOverApp = () => {
   const generatePattern = () => {
     if (canvas.length === 0) return '';
     
+    const structure = currentStructure;
+    const isRound = selectedCraft === 'knit' && (selectedPreset.includes('beanie') || selectedPreset.includes('cowl'));
+    
     let pattern = `${projectName}\n`;
     pattern += `${'='.repeat(projectName.length)}\n\n`;
-    pattern += `A ${projectPresets[selectedPreset].name} • ${desiredWidth}" × ${desiredLength}"\n\n`;
+    pattern += `A ${projectPresets[selectedPreset].name}\n`;
+    pattern += `Finished size: approximately ${desiredWidth}" × ${desiredLength}"\n\n`;
     
-    pattern += `WHAT YOU'LL NEED:\n`;
-    pattern += `• Yarn: ${yarnWeights[yarnWeight].name} (${totalYardageWithBuffer} yards)\n`;
-    pattern += `  Popular brands: ${yarnWeights[yarnWeight].popularBrands.slice(0, 2).join(', ')}\n`;
+    // Friendly intro
+    pattern += `Hi! Let's make your ${projectPresets[selectedPreset].name} together. This pattern will guide you step-by-step through the process. Take your time and enjoy the journey!\n\n`;
+    
+    pattern += `WHAT YOU'LL NEED:\n\n`;
+    pattern += `Materials:\n`;
+    pattern += `• ${yarnWeights[yarnWeight].name} yarn (you'll need about ${totalYardageWithBuffer} yards)\n`;
+    pattern += `  I recommend: ${yarnWeights[yarnWeight].popularBrands.slice(0, 2).join(' or ')}\n`;
     
     // Add colorwork info if enabled
     if (colorwork.enabled && colorwork.colors.length > 1) {
-      pattern += `• Colors needed: ${colorwork.colors.length} (${colorwork.colors.join(', ')})\n`;
-      if (colorwork.type === 'stripes') {
-        pattern += `  Stripe pattern: See colorwork section below\n`;
-      }
-    }
-    
-    if (selectedCraft === 'knit') {
-      pattern += `• Needles: ${yarnWeights[yarnWeight].needles}\n`;
-    } else {
-      pattern += `• Hook: ${yarnWeights[yarnWeight].hooks}\n`;
-    }
-    pattern += `• Gauge: ${stitchesPerInch} sts × ${rowsPerInch} rows per inch\n`;
-    
-    // Add any special notions based on project
-    const structure = currentStructure;
-    if (structure.shaping?.thumb) {
-      pattern += `• Stitch holders or waste yarn for thumb\n`;
-    }
-    if (structure.shaping?.handles) {
-      pattern += `• Tapestry needle for seaming handles\n`;
+      pattern += `• ${colorwork.colors.length} colors: ${colorwork.colors.join(', ')}\n`;
     }
     
     pattern += `\n`;
     
-    pattern += `CAN'T FIND THIS YARN?\n`;
-    pattern += `Try: ${yarnWeights[yarnWeight].substitutes.slice(0, 2).join(' OR ')}\n\n`;
+    if (selectedCraft === 'knit') {
+      pattern += `Needles:\n`;
+      pattern += `• ${yarnWeights[yarnWeight].needles}\n`;
+    } else {
+      pattern += `Hook:\n`;
+      pattern += `• ${yarnWeights[yarnWeight].hooks}\n`;
+    }
     
-    pattern += `LET'S GET STARTED:\n`;
-    pattern += `Cast on ${estimatedStitches} stitches (this gives you your ${desiredWidth}" width)\n\n`;
+    pattern += `\n`;
+    pattern += `Other notions:\n`;
+    pattern += `• Tapestry needle for weaving in ends\n`;
+    pattern += `• Scissors\n`;
+    if (isRound) {
+      pattern += `• Stitch marker\n`;
+    }
+    if (structure.shaping?.thumb) {
+      pattern += `• Stitch holders or waste yarn for thumb opening\n`;
+    }
+    
+    pattern += `\n`;
+    pattern += `Gauge:\n`;
+    pattern += `${stitchesPerInch} sts × ${rowsPerInch} rows = 1 inch\n`;
+    pattern += `(Gauge matters! Take the time to check yours matches this.)\n\n`;
+    
+    pattern += `Can't find this exact yarn?\n`;
+    pattern += `No worries! Any ${yarnWeights[yarnWeight].name} yarn will work. Try ${yarnWeights[yarnWeight].substitutes.slice(0, 2).join(' or ')}.\n\n`;
+    
+    pattern += `${'-'.repeat(60)}\n\n`;
+    
+    pattern += `LET'S GET STARTED!\n\n`;
+    
+    // Cast on instructions
+    if (isRound) {
+      pattern += `Cast on ${estimatedStitches} stitches and join in the round, being careful not to twist your stitches. Place a stitch marker to mark the beginning of the round.\n\n`;
+    } else {
+      pattern += `Cast on ${estimatedStitches} stitches. This will give you a width of about ${desiredWidth}".\n\n`;
+    }
     
     // Add colorwork instructions if enabled
     if (colorwork.enabled && colorwork.type === 'stripes' && colorwork.pattern.length > 0) {
-      pattern += `COLORWORK - STRIPE PATTERN:\n`;
+      pattern += `ABOUT YOUR STRIPES:\n`;
+      pattern += `You'll be working in these colors throughout your project:\n`;
       colorwork.pattern.forEach((stripe, idx) => {
-        pattern += `  ${stripe.color}: ${stripe.rows} rows\n`;
+        pattern += `  • ${stripe.color}: work ${stripe.rows} ${isRound ? 'rounds' : 'rows'}\n`;
       });
-      pattern += `  Repeat this sequence throughout\n\n`;
+      pattern += `Then repeat this sequence until you reach the end of each section.\n\n`;
     }
     
-    // Add pattern sections with template guidance
+    pattern += `THE PATTERN:\n\n`;
+    
+    // Add pattern sections with conversational language
     canvas.forEach((section, idx) => {
       if (section) {
         // Add template section name if available
         const templateSection = structure.template && structure.template[idx];
         const sectionLabel = templateSection ? templateSection.name : `Section ${idx + 1}`;
         
-        pattern += `${idx + 1}. ${sectionLabel}: ${section.name} (${section.difficulty})\n`;
-        section.pattern.forEach((row) => {
+        pattern += `${'—'.repeat(60)}\n`;
+        pattern += `${sectionLabel.toUpperCase()}\n`;
+        pattern += `${'—'.repeat(60)}\n\n`;
+        
+        // Add friendly description
+        if (templateSection && templateSection.suggestion) {
+          pattern += `(${templateSection.suggestion})\n\n`;
+        }
+        
+        pattern += `We'll be working in ${section.name} for this section. `;
+        
+        if (section.difficulty === 'beginner') {
+          pattern += `This is a beginner-friendly stitch - you've got this!\n\n`;
+        } else if (section.difficulty === 'easy') {
+          pattern += `This is an easy stitch pattern.\n\n`;
+        } else if (section.difficulty === 'intermediate') {
+          pattern += `This stitch is intermediate level - take it slow and you'll do great!\n\n`;
+        } else {
+          pattern += `This is an advanced stitch - you're ambitious and I love it!\n\n`;
+        }
+        
+        // Row instructions
+        pattern += `Work as follows:\n\n`;
+        section.pattern.forEach((row, rowIdx) => {
           pattern += `   ${row}\n`;
         });
-        pattern += `   Repeat these ${section.rowRepeat} rows until section measures desired length\n\n`;
+        
+        pattern += `\n`;
+        
+        if (section.rowRepeat === 1) {
+          pattern += `Repeat this row `;
+        } else if (section.rowRepeat === 2) {
+          pattern += `Repeat these 2 rows `;
+        } else {
+          pattern += `Repeat these ${section.rowRepeat} rows `;
+        }
+        
+        pattern += `until this section measures your desired length`;
+        
+        // Add measurement guidance if it's a template section
+        if (idx === 0 && structure.template && structure.template[0].name.toLowerCase().includes('brim')) {
+          pattern += ` (about 2-3 inches for a nice folded brim)`;
+        } else if (idx === 0 && structure.template && structure.template[0].name.toLowerCase().includes('border')) {
+          pattern += ` (about 1-2 inches for a neat edge)`;
+        }
+        
+        pattern += `.\n\n`;
+        
+        if (section.rowRepeat > 1) {
+          pattern += `💡 Tip: Place a stitch marker or note on your paper each time you complete the ${section.rowRepeat}-row repeat to help you keep track!\n\n`;
+        }
       }
     });
     
     // Add shaping instructions if project has them
     if (structure.shaping) {
-      pattern += `SHAPING:\n`;
-      pattern += `${'-'.repeat(50)}\n`;
+      pattern += `${'-'.repeat(60)}\n`;
+      pattern += `SHAPING\n`;
+      pattern += `${'-'.repeat(60)}\n\n`;
       
       if (structure.shaping.crown) {
-        pattern += `CROWN DECREASES (for top of hat):\n`;
+        pattern += `TIME FOR THE CROWN:\n\n`;
+        pattern += `Continue in your pattern until your hat measures about 7-8 inches from the cast-on edge (or your desired length before starting decreases).\n\n`;
+        pattern += `Now we'll shape the top of the hat with decreases:\n\n`;
         structure.shaping.crown.instructions.forEach(line => {
-          pattern += `${line}\n`;
+          if (line.trim()) {
+            pattern += `${line}\n`;
+          }
         });
         pattern += `\n`;
       }
       
       if (structure.shaping.increases) {
-        pattern += `INCREASES (for shawl shaping):\n`;
+        pattern += `WORKING THE INCREASES:\n\n`;
+        pattern += `This piece grows as you knit! Here's how:\n\n`;
         structure.shaping.increases.instructions.forEach(line => {
-          pattern += `${line}\n`;
+          if (line.trim()) {
+            pattern += `${line}\n`;
+          }
         });
         pattern += `\n`;
       }
       
       if (structure.shaping.thumb) {
-        pattern += structure.shaping.thumb.instructions.join('\n');
+        pattern += `CREATING THE THUMB OPENING:\n\n`;
+        structure.shaping.thumb.instructions.forEach(line => {
+          if (line.trim()) {
+            pattern += `${line}\n`;
+          }
+        });
         pattern += `\n\n`;
       }
       
       if (structure.shaping.handles) {
-        pattern += structure.shaping.handles.instructions.join('\n');
+        pattern += `MAKING THE HANDLES:\n\n`;
+        structure.shaping.handles.instructions.forEach(line => {
+          if (line.trim()) {
+            pattern += `${line}\n`;
+          }
+        });
         pattern += `\n\n`;
       }
     }
     
-    pattern += `FINISHING UP:\n`;
-    pattern += `• Bind off all stitches loosely\n`;
-    pattern += `• Weave in any loose ends with a tapestry needle\n`;
-    pattern += `• Block gently to ${desiredWidth}" × ${desiredLength}" (optional but recommended!)\n\n`;
-    pattern += `${'-'.repeat(50)}\n`;
-    pattern += `Created with Yarn Over • yarnover.app\n`;
+    pattern += `${'-'.repeat(60)}\n`;
+    pattern += `FINISHING TOUCHES\n`;
+    pattern += `${'-'.repeat(60)}\n\n`;
+    
+    pattern += `You're almost done! Here's how to finish up:\n\n`;
+    pattern += `1. Bind off all stitches loosely (you want this edge to have some stretch)\n`;
+    pattern += `2. Weave in all your ends with a tapestry needle\n`;
+    if (structure.shaping?.crown) {
+      pattern += `3. If you like, add a pompom to the top!\n`;
+    }
+    pattern += `4. Optional but recommended: Block your finished piece gently to ${desiredWidth}" × ${desiredLength}"\n`;
+    pattern += `   (Blocking helps even out your stitches and really makes your work shine!)\n\n`;
+    
+    pattern += `${'-'.repeat(60)}\n\n`;
+    pattern += `Congratulations! You made a beautiful ${projectPresets[selectedPreset].name}! 🎉\n\n`;
+    pattern += `Created with ♥ using Yarn Over (yarnover.app)\n`;
     pattern += `Happy making! 🧶\n`;
     
     return pattern;
@@ -2695,29 +2793,29 @@ const YarnOverApp = () => {
 
           {/* Canvas */}
           <div className="lg:col-span-2">
-            {/* Visual Preview */}
-            {showPreview && canvas.some(s => s !== null) && (
-              <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <Eye size={24} className="text-slate-500" />
-                    <h3 className="text-lg font-bold text-gray-800">Visual Preview</h3>
-                  </div>
-                  <button
-                    onClick={() => setShowPreview(!showPreview)}
-                    className="text-sm text-slate-500 hover:text-slate-600"
-                  >
-                    Hide Preview
-                  </button>
+            {/* Visual Preview - Always show */}
+            <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Eye size={24} className="text-slate-500" />
+                  <h3 className="text-lg font-bold text-gray-800">Visual Preview</h3>
                 </div>
+                <button
+                  onClick={() => setShowPreview(!showPreview)}
+                  className="text-sm text-slate-500 hover:text-slate-600"
+                >
+                  {showPreview ? 'Hide' : 'Show'} Preview
+                </button>
+              </div>
+              {showPreview && (
                 <div className="bg-gray-50 rounded-xl p-4 overflow-x-auto">
                   <canvas
                     ref={previewCanvasRef}
-                    className="border-2 border-gray-200 rounded"
+                    className="border-2 border-gray-200 rounded mx-auto"
                   />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Project Template Guidance */}
             {currentStructure.template && (
@@ -3221,6 +3319,25 @@ const YarnOverApp = () => {
 
               {/* Example Projects Grid */}
               <div className="p-6 bg-gray-50 max-h-[600px] overflow-y-auto">
+                {/* Photo Upload Instructions Banner */}
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <div className="text-2xl">📸</div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-gray-800 mb-1">Want to Add Real Photos?</h4>
+                      <p className="text-sm text-gray-700 mb-2">
+                        Right now we're showing placeholder emojis. Here's how to add beautiful project photos:
+                      </p>
+                      <ol className="text-sm text-gray-700 space-y-1 ml-4">
+                        <li>• Take photos of finished projects (or use examples from Ravelry/Instagram with permission)</li>
+                        <li>• Upload them to an image hosting service (Imgur, Cloudinary, etc.)</li>
+                        <li>• Replace the <code className="bg-white px-1 rounded">emoji</code> field with <code className="bg-white px-1 rounded">imageUrl: "https://..."</code></li>
+                        <li>• Update in the <code className="bg-white px-1 rounded">projectPresets</code> section of the code</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                
                 {currentPresetExamples.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500 text-lg mb-4">No examples yet for this project type</p>
@@ -3233,9 +3350,20 @@ const YarnOverApp = () => {
                         key={example.id}
                         className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-slate-200 hover:border-slate-300 transition-all"
                       >
-                        {/* Project Image/Emoji */}
-                        <div className="bg-gradient-to-br from-slate-100 to-slate-100 h-48 flex items-center justify-center text-8xl">
-                          {example.emoji}
+                        {/* Project Image/Emoji Placeholder */}
+                        <div className="bg-gradient-to-br from-slate-100 to-slate-200 h-64 flex items-center justify-center relative overflow-hidden">
+                          {example.imageUrl ? (
+                            <img 
+                              src={example.imageUrl} 
+                              alt={example.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <div className="text-8xl mb-2">{example.emoji}</div>
+                              <p className="text-xs text-gray-500 italic">Photo placeholder</p>
+                            </div>
+                          )}
                         </div>
                         
                         {/* Project Info */}

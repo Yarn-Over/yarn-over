@@ -16,6 +16,17 @@ const YarnOverApp = () => {
   const [beginnerMode, setBeginnerMode] = useState(true);
   const [wizardStep, setWizardStep] = useState(1);
   
+  // Pattern Builder state
+  const [patternBuilderOpen, setPatternBuilderOpen] = useState(false);
+  const [customPatterns, setCustomPatterns] = useState([]);
+  const [buildingPattern, setBuildingPattern] = useState({
+    name: '',
+    rows: [],
+    difficulty: 'intermediate',
+    category: 'custom'
+  });
+  const [currentRow, setCurrentRow] = useState('');
+  
   // Gauge calculator state
   const [stitchesPerInch, setStitchesPerInch] = useState(5);
   const [rowsPerInch, setRowsPerInch] = useState(7);
@@ -644,6 +655,133 @@ const YarnOverApp = () => {
         difficulty: 'advanced',
         videoUrl: 'https://www.youtube.com/embed/KX6kEvb0Aqg',
         videoTitle: 'How to Knit Bobble Stitch'
+      },
+      
+      // COMPOSITE PATTERNS - Multi-row designs
+      {
+        id: 'slip_stitch_texture',
+        name: 'Slip Stitch Texture',
+        category: 'composite',
+        symbol: '⚡',
+        color: '#FFF9E6',
+        texturePattern: 'diagonal',
+        description: 'Creates diagonal textured pattern with slip stitches',
+        pattern: [
+          'Row 1 (RS): Sl1, K to end',
+          'Row 2 (WS): Sl1, K3, *(YO) 3 times, K1; repeat from * to last 4 sts, K4',
+          'Row 3 (RS): Sl1, K to end, dropping all YO loops',
+          'Row 4 (WS): Sl1, K to end'
+        ],
+        rowRepeat: 4,
+        stitchMultiple: 1,
+        difficulty: 'intermediate',
+        videoUrl: 'https://www.youtube.com/embed/SfOZuiY_LL8',
+        videoTitle: 'Slip Stitch Patterns'
+      },
+      {
+        id: 'eyelet_chevron',
+        name: 'Eyelet Chevron',
+        category: 'composite',
+        symbol: '∧∨',
+        color: '#E6F3FF',
+        texturePattern: 'zigzag',
+        description: 'Lacy chevron pattern with yarn overs',
+        pattern: [
+          'Row 1 (RS): *K1, YO, K2, SK2P, K2, YO; repeat from *',
+          'Row 2 and all WS rows: Purl',
+          'Row 3 (RS): *K2, YO, K1, SK2P, K1, YO, K1; repeat from *',
+          'Row 5 (RS): *K3, YO, SK2P, YO, K2; repeat from *',
+          'Row 6: Purl'
+        ],
+        rowRepeat: 6,
+        stitchMultiple: 8,
+        difficulty: 'intermediate',
+        videoUrl: 'https://www.youtube.com/embed/BkChBLxiQX4',
+        videoTitle: 'Lace Chevron Pattern'
+      },
+      {
+        id: 'mock_cable',
+        name: 'Mock Cable Twist',
+        category: 'composite',
+        symbol: '⚭',
+        color: '#FFEEF0',
+        texturePattern: 'twisted',
+        description: 'Cable-like twist without a cable needle',
+        pattern: [
+          'Rows 1 & 3 (RS): *P2, K4, P2; repeat from *',
+          'Rows 2 & 4 (WS): *K2, P4, K2; repeat from *',
+          'Row 5 (RS): *P2, K2tog but leave on needle, knit first st again, slip both sts off needle, P2; repeat from *',
+          'Row 6 (WS): *K2, P4, K2; repeat from *'
+        ],
+        rowRepeat: 6,
+        stitchMultiple: 8,
+        difficulty: 'easy',
+        videoUrl: 'https://www.youtube.com/embed/Hs0N5v7kU4Q',
+        videoTitle: 'Mock Cable Technique'
+      },
+      {
+        id: 'garter_lace',
+        name: 'Garter & Lace Band',
+        category: 'composite',
+        symbol: '⋈',
+        color: '#F5EDFF',
+        texturePattern: 'mixed',
+        description: 'Alternating garter and eyelet lace sections',
+        pattern: [
+          'Rows 1-4: Knit all stitches (garter)',
+          'Row 5 (RS): K2, *YO, K2tog; repeat from * to last 2 sts, K2',
+          'Row 6 (WS): Knit',
+          'Row 7 (RS): K2, *K2tog, YO; repeat from * to last 2 sts, K2',
+          'Row 8 (WS): Knit',
+          'Rows 9-12: Knit all stitches (garter)'
+        ],
+        rowRepeat: 12,
+        stitchMultiple: 2,
+        difficulty: 'easy',
+        videoUrl: 'https://www.youtube.com/embed/q9-HCTB7Vhw',
+        videoTitle: 'Garter Lace Combinations'
+      },
+      {
+        id: 'braided_traveling',
+        name: 'Braided Traveling Stitch',
+        category: 'composite',
+        symbol: '⥮',
+        color: '#FFF0F5',
+        texturePattern: 'diagonal',
+        description: 'Stitches travel diagonally creating braid effect',
+        pattern: [
+          'Row 1 (RS): *P2, RT (K2tog, leave on needle, knit first st again), P2; repeat from *',
+          'Row 2 (WS): *K2, P2, K2; repeat from *',
+          'Row 3 (RS): *P1, RT, LT (slip 1, K1, PSSO but leave on needle, knit skipped st), P1; repeat from *',
+          'Row 4 (WS): *K1, P4, K1; repeat from *',
+          'Row 5 (RS): *RT, P2, LT; repeat from *',
+          'Row 6 (WS): *P1, K4, P1; repeat from *'
+        ],
+        rowRepeat: 6,
+        stitchMultiple: 6,
+        difficulty: 'intermediate',
+        videoUrl: 'https://www.youtube.com/embed/8Bb5M-fkCUc',
+        videoTitle: 'Traveling Stitch Techniques'
+      },
+      {
+        id: 'trinity_stitch',
+        name: 'Trinity / Blackberry Stitch',
+        category: 'composite',
+        symbol: '⦿',
+        color: '#FFFACD',
+        texturePattern: 'bumpy',
+        description: 'Highly textured 3D stitch pattern',
+        pattern: [
+          'Row 1 (RS): Purl',
+          'Row 2 (WS): *(K1, P1, K1) all in next st, P3tog; repeat from *',
+          'Row 3 (RS): Purl',
+          'Row 4 (WS): *P3tog, (K1, P1, K1) all in next st; repeat from *'
+        ],
+        rowRepeat: 4,
+        stitchMultiple: 4,
+        difficulty: 'intermediate',
+        videoUrl: 'https://www.youtube.com/embed/O8OFyq6w3Jk',
+        videoTitle: 'Trinity Stitch Tutorial'
       }
     ],
     crochet: [
@@ -755,7 +893,9 @@ const YarnOverApp = () => {
     basics: 'Basic Stitches',
     cables: 'Cables',
     lace: 'Lace',
-    textured: 'Textured'
+    textured: 'Textured',
+    composite: 'Multi-Row Patterns',
+    custom: 'My Custom Patterns'
   };
 
   // Difficulty order for sorting
@@ -781,7 +921,7 @@ const YarnOverApp = () => {
 
   // Filter stitches by category or difficulty, then sort by difficulty level
   const filteredStitches = (() => {
-    let stitches = stitchLibrary[selectedCraft];
+    let stitches = [...stitchLibrary[selectedCraft], ...customPatterns];
     
     // Filter by category or difficulty
     if (selectedCategory !== 'all') {
@@ -1039,6 +1179,74 @@ const YarnOverApp = () => {
     return pattern;
   };
 
+  // Pattern Builder Functions
+  const addRowToPattern = () => {
+    if (!currentRow.trim()) return;
+    
+    setBuildingPattern(prev => ({
+      ...prev,
+      rows: [...prev.rows, currentRow]
+    }));
+    setCurrentRow('');
+  };
+  
+  const deleteRow = (index) => {
+    setBuildingPattern(prev => ({
+      ...prev,
+      rows: prev.rows.filter((_, i) => i !== index)
+    }));
+  };
+  
+  const saveCustomPattern = () => {
+    if (!buildingPattern.name.trim() || buildingPattern.rows.length === 0) {
+      alert('Please add a pattern name and at least one row!');
+      return;
+    }
+    
+    const newPattern = {
+      id: `custom_${Date.now()}`,
+      name: buildingPattern.name,
+      category: 'custom',
+      symbol: '✨',
+      color: '#E8F5E9',
+      texturePattern: 'custom',
+      description: `Custom ${buildingPattern.rows.length}-row pattern`,
+      pattern: buildingPattern.rows,
+      rowRepeat: buildingPattern.rows.length,
+      stitchMultiple: 1,
+      difficulty: buildingPattern.difficulty,
+      videoUrl: '',
+      videoTitle: ''
+    };
+    
+    setCustomPatterns(prev => [...prev, newPattern]);
+    
+    // Reset builder
+    setBuildingPattern({
+      name: '',
+      rows: [],
+      difficulty: 'intermediate',
+      category: 'custom'
+    });
+    setPatternBuilderOpen(false);
+    
+    alert(`Pattern "${newPattern.name}" saved! Find it in "My Custom Patterns" category.`);
+  };
+  
+  const clearBuilder = () => {
+    if (buildingPattern.rows.length > 0) {
+      if (confirm('Clear all rows? This cannot be undone.')) {
+        setBuildingPattern({
+          name: '',
+          rows: [],
+          difficulty: 'intermediate',
+          category: 'custom'
+        });
+        setCurrentRow('');
+      }
+    }
+  };
+
   const downloadPattern = () => {
     const pattern = generatePattern();
     const blob = new Blob([pattern], { type: 'text/plain' });
@@ -1070,7 +1278,7 @@ const YarnOverApp = () => {
                   : 'bg-white hover:bg-gray-100 text-gray-700 border-2 border-gray-300'
               }`}
             >
-              {beginnerMode ? '✨ Step-by-Step Mode (Current)' : '🚀 Try Advanced Mode'}
+              {beginnerMode ? '🚀 Try Advanced Mode' : '✨ Switch to Step-by-Step'}
             </button>
           </div>
           
@@ -1935,9 +2143,20 @@ const YarnOverApp = () => {
                     <option value="cables">{categories.cables}</option>
                     <option value="lace">{categories.lace}</option>
                     <option value="textured">{categories.textured}</option>
+                    <option value="composite">{categories.composite}</option>
+                    <option value="custom">{categories.custom}</option>
                   </optgroup>
                 </select>
               </div>
+              
+              {/* Pattern Builder Button */}
+              <button
+                onClick={() => setPatternBuilderOpen(true)}
+                className="w-full mb-4 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all shadow-md flex items-center justify-center gap-2 font-semibold"
+              >
+                <span className="text-xl">✨</span>
+                Build Custom Pattern
+              </button>
 
               <div className="space-y-3 max-h-[600px] overflow-y-auto">
                 {filteredStitches.map((stitch) => {
@@ -2288,6 +2507,182 @@ const YarnOverApp = () => {
                 >
                   Add This Stitch to My Pattern
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pattern Builder Modal */}
+        {patternBuilderOpen && (
+          <div 
+            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto"
+            onClick={() => setPatternBuilderOpen(false)}
+          >
+            <div 
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">✨</span>
+                    <div>
+                      <h3 className="text-white font-bold text-2xl">Pattern Builder</h3>
+                      <p className="text-white/90 text-sm">Create your own multi-row stitch pattern</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setPatternBuilderOpen(false)}
+                    className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
+                  >
+                    <X size={28} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Builder Content */}
+              <div className="p-6 space-y-6">
+                {/* Pattern Name */}
+                <div>
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    Pattern Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={buildingPattern.name}
+                    onChange={(e) => setBuildingPattern(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="e.g., My Custom Cable, Textured X Pattern"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none text-base"
+                  />
+                </div>
+
+                {/* Difficulty Selection */}
+                <div>
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    Difficulty Level
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {['beginner', 'easy', 'intermediate', 'advanced'].map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => setBuildingPattern(prev => ({ ...prev, difficulty: level }))}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                          buildingPattern.difficulty === level
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Row Input */}
+                <div>
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    Add Rows to Your Pattern
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={currentRow}
+                      onChange={(e) => setCurrentRow(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && addRowToPattern()}
+                      placeholder="e.g., Row 1: K2, P2, repeat to end"
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none text-base"
+                    />
+                    <button
+                      onClick={addRowToPattern}
+                      className="px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-semibold"
+                    >
+                      Add Row
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    💡 Tip: Be specific! Include row numbers and full instructions. Press Enter or click "Add Row"
+                  </p>
+                </div>
+
+                {/* Pattern Preview */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-sm font-bold text-gray-800">
+                      Pattern Preview ({buildingPattern.rows.length} rows)
+                    </label>
+                    {buildingPattern.rows.length > 0 && (
+                      <button
+                        onClick={clearBuilder}
+                        className="text-xs text-red-600 hover:text-red-700 font-semibold"
+                      >
+                        Clear All
+                      </button>
+                    )}
+                  </div>
+                  
+                  {buildingPattern.rows.length === 0 ? (
+                    <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                      <p className="text-gray-400 text-sm">No rows added yet. Start building your pattern above!</p>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 max-h-64 overflow-y-auto space-y-2">
+                      {buildingPattern.rows.map((row, index) => (
+                        <div
+                          key={index}
+                          className="flex items-start justify-between bg-white p-3 rounded-lg border border-gray-200 hover:border-emerald-300 transition-colors"
+                        >
+                          <div className="flex-1">
+                            <span className="text-xs font-bold text-emerald-600">Row {index + 1}</span>
+                            <p className="text-sm text-gray-800 mt-1">{row}</p>
+                          </div>
+                          <button
+                            onClick={() => deleteRow(index)}
+                            className="ml-3 text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded transition-colors"
+                          >
+                            <X size={18} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Common Abbreviations Helper */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-bold text-gray-800 text-sm mb-2">📚 Common Abbreviations:</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-700">
+                    <div><strong>K</strong> - Knit</div>
+                    <div><strong>P</strong> - Purl</div>
+                    <div><strong>YO</strong> - Yarn Over</div>
+                    <div><strong>K2tog</strong> - Knit 2 together</div>
+                    <div><strong>SSK</strong> - Slip Slip Knit</div>
+                    <div><strong>Sl</strong> - Slip stitch</div>
+                    <div><strong>RS</strong> - Right side</div>
+                    <div><strong>WS</strong> - Wrong side</div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <button
+                    onClick={() => setPatternBuilderOpen(false)}
+                    className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={saveCustomPattern}
+                    disabled={!buildingPattern.name.trim() || buildingPattern.rows.length === 0}
+                    className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-colors ${
+                      buildingPattern.name.trim() && buildingPattern.rows.length > 0
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Save Pattern ✨
+                  </button>
+                </div>
               </div>
             </div>
           </div>

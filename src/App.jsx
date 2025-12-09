@@ -6,6 +6,12 @@ const YarnOverApp = () => {
   const [width, setWidth] = useState(40);
   const [selectedCraft, setSelectedCraft] = useState('knit');
   const [canvas, setCanvas] = useState([]);
+  const [colorwork, setColorwork] = useState({
+    enabled: false,
+    type: 'stripes', // 'stripes' or 'fairisle'
+    colors: ['Main Color'],
+    pattern: []
+  });
   const [draggedStitch, setDraggedStitch] = useState(null);
   const [showPreview, setShowPreview] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -200,6 +206,236 @@ const YarnOverApp = () => {
   };
 
   // Project presets with example galleries
+  // Project Structure Templates
+  const projectStructures = {
+    // SCARVES - Simple repeating patterns
+    scarf_standard: {
+      maxSections: 3,
+      template: [
+        { name: 'Main Pattern', type: 'repeating', required: true, suggestion: 'Choose your favorite stitch - this will repeat for the entire scarf' }
+      ],
+      shaping: null
+    },
+    scarf_kids: {
+      maxSections: 3,
+      template: [
+        { name: 'Main Pattern', type: 'repeating', required: true }
+      ]
+    },
+    scarf_extra_long: {
+      maxSections: 4,
+      template: [
+        { name: 'Border (Optional)', type: 'edge', suggestion: 'Try garter or seed stitch for edges' },
+        { name: 'Main Pattern Section 1', type: 'main', required: true },
+        { name: 'Main Pattern Section 2', type: 'main' },
+        { name: 'Border (Optional)', type: 'edge', suggestion: 'Match your starting border' }
+      ]
+    },
+    scarf_infinity: {
+      maxSections: 2,
+      template: [
+        { name: 'Main Pattern', type: 'repeating', required: true }
+      ]
+    },
+    
+    // HATS - Structured: Brim → Body → Crown
+    beanie: {
+      maxSections: 3,
+      template: [
+        { name: 'Brim', type: 'edge', required: true, suggestion: '2x2 Ribbing is classic for stretch' },
+        { name: 'Body', type: 'main', required: true, suggestion: 'Your main pattern - shows on most of hat' },
+        { name: 'Crown Decreases', type: 'shaping', required: true, autoGenerate: true }
+      ],
+      shaping: {
+        crown: {
+          instructions: [
+            'Continue in pattern until hat measures desired length (typically 7-8" from cast on)',
+            '',
+            'BEGIN CROWN DECREASES:',
+            'Round 1: *K8, K2tog; repeat from * to end',
+            'Round 2: Knit all stitches',
+            'Round 3: *K7, K2tog; repeat from * to end', 
+            'Round 4: Knit all stitches',
+            'Round 5: *K6, K2tog; repeat from * to end',
+            'Round 6: Knit all stitches',
+            'Continue decreasing every other round (K one less stitch before K2tog each time)',
+            'When 8-10 stitches remain, cut yarn and thread through remaining stitches',
+            'Pull tight and weave in end'
+          ]
+        }
+      }
+    },
+    beanie_brim: {
+      maxSections: 3,
+      template: [
+        { name: 'Brim/Cuff', type: 'edge', required: true, suggestion: 'Extra-long ribbing that folds up' },
+        { name: 'Body', type: 'main', required: true },
+        { name: 'Crown Decreases', type: 'shaping', required: true, autoGenerate: true }
+      ],
+      shaping: {
+        crown: {
+          instructions: [
+            'Work in pattern until hat measures 8-9" from cast on (including folded brim)',
+            'BEGIN CROWN DECREASES (same as basic beanie above)'
+          ]
+        }
+      }
+    },
+    
+    // COWLS - Simple or textured
+    cowl: {
+      maxSections: 2,
+      template: [
+        { name: 'Main Pattern', type: 'repeating', required: true, suggestion: 'Choose a stitch that looks good on both sides!' }
+      ]
+    },
+    cowl_chunky: {
+      maxSections: 2,
+      template: [
+        { name: 'Main Pattern', type: 'repeating', required: true }
+      ]
+    },
+    
+    // SHAWLS - Increases + pattern sections
+    shawl_small: {
+      maxSections: 4,
+      template: [
+        { name: 'Border', type: 'edge', suggestion: 'Garter stitch edge prevents curling' },
+        { name: 'Section 1', type: 'main', required: true },
+        { name: 'Section 2', type: 'main' },
+        { name: 'Border', type: 'edge', suggestion: 'Match your starting border' }
+      ],
+      shaping: {
+        increases: {
+          instructions: [
+            'This shawl is worked flat from the top down with increases',
+            'Increase row (RS): K2, KFB, work pattern to last 4 sts, KFB, K2',
+            'Work increase row every other row (on RS only)',
+            'Continue until shawl reaches desired width'
+          ]
+        }
+      }
+    },
+    shawl_large: {
+      maxSections: 5,
+      template: [
+        { name: 'Border', type: 'edge' },
+        { name: 'Section 1', type: 'main', required: true },
+        { name: 'Section 2', type: 'main' },
+        { name: 'Section 3', type: 'main' },
+        { name: 'Border', type: 'edge' }
+      ],
+      shaping: {
+        increases: {
+          instructions: [
+            'This shawl is worked flat from the top down with increases',
+            'Increase row (RS): K2, KFB, work pattern to last 4 sts, KFB, K2',
+            'Work increase row every other row (on RS only)',
+            'Continue until shawl reaches desired width'
+          ]
+        }
+      }
+    },
+    
+    // ACCESSORIES - Simple
+    headband: {
+      maxSections: 2,
+      template: [
+        { name: 'Main Pattern', type: 'repeating', required: true }
+      ]
+    },
+    fingerless_gloves: {
+      maxSections: 2,
+      template: [
+        { name: 'Cuff', type: 'edge', required: true, suggestion: 'Ribbing for snug fit' },
+        { name: 'Hand', type: 'main', required: true }
+      ],
+      shaping: {
+        thumb: {
+          instructions: [
+            'THUMB OPENING:',
+            'Work in pattern to last 6 stitches, place next 6 sts on holder for thumb',
+            'Cast on 6 sts over the gap, continue in pattern',
+            'Work until glove reaches desired length',
+            'Bind off in pattern',
+            '',
+            'THUMB:',
+            'Pick up 6 held stitches, pick up 6 sts from cast-on edge (12 sts total)',
+            'Work in stockinette or pattern for 1-1.5 inches',
+            'Bind off'
+          ]
+        }
+      }
+    },
+    
+    // HOME GOODS - Flat rectangles (simple)
+    dishcloth: {
+      maxSections: 1,
+      template: [
+        { name: 'Main Pattern', type: 'main', required: true, suggestion: 'Seed stitch or moss stitch work great!' }
+      ]
+    },
+    potholder: {
+      maxSections: 2,
+      template: [
+        { name: 'Border', type: 'edge', suggestion: 'Garter border lays flat' },
+        { name: 'Center', type: 'main', required: true }
+      ]
+    },
+    
+    // BLANKETS - Sections or repeating
+    baby_blanket: {
+      maxSections: 5,
+      template: [
+        { name: 'Border', type: 'edge', suggestion: 'Garter stitch prevents curling' },
+        { name: 'Main Pattern', type: 'main', required: true, suggestion: 'This will be most of your blanket!' },
+        { name: 'Optional Accent', type: 'accent' },
+        { name: 'Border', type: 'edge', suggestion: 'Match your starting border' }
+      ]
+    },
+    throw_blanket: {
+      maxSections: 6,
+      template: [
+        { name: 'Border', type: 'edge' },
+        { name: 'Section 1', type: 'main', required: true },
+        { name: 'Section 2', type: 'main' },
+        { name: 'Section 3', type: 'main' },
+        { name: 'Border', type: 'edge' }
+      ]
+    },
+    
+    // BAGS - Structured
+    market_bag: {
+      maxSections: 2,
+      template: [
+        { name: 'Main Pattern', type: 'main', required: true, suggestion: 'Tight stitch for strength!' }
+      ],
+      shaping: {
+        handles: {
+          instructions: [
+            'HANDLES (make 2):',
+            'Cast on 8 stitches',
+            'Work in stockinette or pattern for 20-24 inches',
+            'Bind off',
+            'Sew securely to top edges of bag'
+          ]
+        }
+      }
+    },
+    
+    // Default for others
+    custom: {
+      maxSections: 10,
+      template: [
+        { name: 'Section 1', type: 'main', required: true }
+      ]
+    }
+  };
+
+  // Get current project structure
+  const currentStructure = projectStructures[selectedPreset] || projectStructures.custom;
+  const maxSections = currentStructure.maxSections || 10;
+
   const projectPresets = {
     custom: { name: 'Custom Size', width: 8, length: 60, examples: [] },
     
@@ -1145,12 +1381,32 @@ const YarnOverApp = () => {
     pattern += `WHAT YOU'LL NEED:\n`;
     pattern += `• Yarn: ${yarnWeights[yarnWeight].name} (${totalYardageWithBuffer} yards)\n`;
     pattern += `  Popular brands: ${yarnWeights[yarnWeight].popularBrands.slice(0, 2).join(', ')}\n`;
+    
+    // Add colorwork info if enabled
+    if (colorwork.enabled && colorwork.colors.length > 1) {
+      pattern += `• Colors needed: ${colorwork.colors.length} (${colorwork.colors.join(', ')})\n`;
+      if (colorwork.type === 'stripes') {
+        pattern += `  Stripe pattern: See colorwork section below\n`;
+      }
+    }
+    
     if (selectedCraft === 'knit') {
       pattern += `• Needles: ${yarnWeights[yarnWeight].needles}\n`;
     } else {
       pattern += `• Hook: ${yarnWeights[yarnWeight].hooks}\n`;
     }
-    pattern += `• Gauge: ${stitchesPerInch} sts × ${rowsPerInch} rows per inch\n\n`;
+    pattern += `• Gauge: ${stitchesPerInch} sts × ${rowsPerInch} rows per inch\n`;
+    
+    // Add any special notions based on project
+    const structure = currentStructure;
+    if (structure.shaping?.thumb) {
+      pattern += `• Stitch holders or waste yarn for thumb\n`;
+    }
+    if (structure.shaping?.handles) {
+      pattern += `• Tapestry needle for seaming handles\n`;
+    }
+    
+    pattern += `\n`;
     
     pattern += `CAN'T FIND THIS YARN?\n`;
     pattern += `Try: ${yarnWeights[yarnWeight].substitutes.slice(0, 2).join(' OR ')}\n\n`;
@@ -1158,15 +1414,61 @@ const YarnOverApp = () => {
     pattern += `LET'S GET STARTED:\n`;
     pattern += `Cast on ${estimatedStitches} stitches (this gives you your ${desiredWidth}" width)\n\n`;
     
+    // Add colorwork instructions if enabled
+    if (colorwork.enabled && colorwork.type === 'stripes' && colorwork.pattern.length > 0) {
+      pattern += `COLORWORK - STRIPE PATTERN:\n`;
+      colorwork.pattern.forEach((stripe, idx) => {
+        pattern += `  ${stripe.color}: ${stripe.rows} rows\n`;
+      });
+      pattern += `  Repeat this sequence throughout\n\n`;
+    }
+    
+    // Add pattern sections with template guidance
     canvas.forEach((section, idx) => {
       if (section) {
-        pattern += `${idx + 1}. ${section.name} (${section.difficulty})\n`;
+        // Add template section name if available
+        const templateSection = structure.template && structure.template[idx];
+        const sectionLabel = templateSection ? templateSection.name : `Section ${idx + 1}`;
+        
+        pattern += `${idx + 1}. ${sectionLabel}: ${section.name} (${section.difficulty})\n`;
         section.pattern.forEach((row) => {
           pattern += `   ${row}\n`;
         });
         pattern += `   Repeat these ${section.rowRepeat} rows until section measures desired length\n\n`;
       }
     });
+    
+    // Add shaping instructions if project has them
+    if (structure.shaping) {
+      pattern += `SHAPING:\n`;
+      pattern += `${'-'.repeat(50)}\n`;
+      
+      if (structure.shaping.crown) {
+        pattern += `CROWN DECREASES (for top of hat):\n`;
+        structure.shaping.crown.instructions.forEach(line => {
+          pattern += `${line}\n`;
+        });
+        pattern += `\n`;
+      }
+      
+      if (structure.shaping.increases) {
+        pattern += `INCREASES (for shawl shaping):\n`;
+        structure.shaping.increases.instructions.forEach(line => {
+          pattern += `${line}\n`;
+        });
+        pattern += `\n`;
+      }
+      
+      if (structure.shaping.thumb) {
+        pattern += structure.shaping.thumb.instructions.join('\n');
+        pattern += `\n\n`;
+      }
+      
+      if (structure.shaping.handles) {
+        pattern += structure.shaping.handles.instructions.join('\n');
+        pattern += `\n\n`;
+      }
+    }
     
     pattern += `FINISHING UP:\n`;
     pattern += `• Bind off all stitches loosely\n`;
@@ -2106,6 +2408,135 @@ const YarnOverApp = () => {
             </div>
           </div>
         </div>
+        
+        {/* Colorwork / Stripes (Optional) */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-gray-800">🎨 Colorwork (Optional)</h3>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={colorwork.enabled}
+                onChange={(e) => setColorwork(prev => ({ ...prev, enabled: e.target.checked }))}
+                className="w-5 h-5 text-slate-500 rounded"
+              />
+              <span className="text-sm font-semibold text-gray-700">Enable Stripes</span>
+            </label>
+          </div>
+          
+          {colorwork.enabled && (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">
+                Add simple stripe patterns to your project. (Full Fairisle charting coming in V4!)
+              </p>
+              
+              {/* Color List */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Colors in Your Project:
+                </label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {colorwork.colors.map((color, idx) => (
+                    <div key={idx} className="flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg">
+                      <span className="text-sm font-medium">{color}</span>
+                      {colorwork.colors.length > 1 && (
+                        <button
+                          onClick={() => {
+                            setColorwork(prev => ({
+                              ...prev,
+                              colors: prev.colors.filter((_, i) => i !== idx)
+                            }));
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => {
+                    const newColor = prompt('Color name (e.g., "Cream", "Navy", "Color B"):');
+                    if (newColor) {
+                      setColorwork(prev => ({
+                        ...prev,
+                        colors: [...prev.colors, newColor]
+                      }));
+                    }
+                  }}
+                  className="text-sm text-slate-500 hover:text-slate-700 font-semibold"
+                >
+                  + Add Color
+                </button>
+              </div>
+              
+              {/* Stripe Pattern */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Stripe Pattern:
+                </label>
+                {colorwork.pattern.map((stripe, idx) => (
+                  <div key={idx} className="flex items-center gap-2 mb-2">
+                    <select
+                      value={stripe.color}
+                      onChange={(e) => {
+                        const newPattern = [...colorwork.pattern];
+                        newPattern[idx].color = e.target.value;
+                        setColorwork(prev => ({ ...prev, pattern: newPattern }));
+                      }}
+                      className="flex-1 px-3 py-2 border-2 border-slate-300 rounded-lg text-sm"
+                    >
+                      {colorwork.colors.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      value={stripe.rows}
+                      onChange={(e) => {
+                        const newPattern = [...colorwork.pattern];
+                        newPattern[idx].rows = parseInt(e.target.value);
+                        setColorwork(prev => ({ ...prev, pattern: newPattern }));
+                      }}
+                      min="1"
+                      max="100"
+                      className="w-20 px-3 py-2 border-2 border-slate-300 rounded-lg text-sm"
+                    />
+                    <span className="text-sm text-gray-600">rows</span>
+                    <button
+                      onClick={() => {
+                        setColorwork(prev => ({
+                          ...prev,
+                          pattern: prev.pattern.filter((_, i) => i !== idx)
+                        }));
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  onClick={() => {
+                    setColorwork(prev => ({
+                      ...prev,
+                      pattern: [...prev.pattern, { color: colorwork.colors[0], rows: 4 }]
+                    }));
+                  }}
+                  className="text-sm px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition-colors"
+                >
+                  + Add Stripe
+                </button>
+                {colorwork.pattern.length > 0 && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    This pattern will repeat throughout your project
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Stitch Library */}
@@ -2266,6 +2697,53 @@ const YarnOverApp = () => {
               </div>
             )}
 
+            {/* Project Template Guidance */}
+            {currentStructure.template && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-4 md:p-6 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="text-3xl">📐</div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-800 mb-2">
+                      {projectPresets[selectedPreset].name} Template Guide
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-3">
+                      Recommended structure ({canvas.length} of {maxSections} sections used):
+                    </p>
+                    <div className="space-y-2">
+                      {currentStructure.template.map((section, idx) => (
+                        <div 
+                          key={idx}
+                          className={`flex items-start gap-2 text-sm ${
+                            canvas[idx] ? 'text-green-700' : section.required ? 'text-gray-800' : 'text-gray-500'
+                          }`}
+                        >
+                          <span className="flex-shrink-0">
+                            {canvas[idx] ? '✅' : section.required ? '📍' : '○'}
+                          </span>
+                          <div>
+                            <span className="font-semibold">{section.name}</span>
+                            {section.required && <span className="text-red-600 ml-1">*</span>}
+                            {section.suggestion && (
+                              <div className="text-xs text-gray-600 mt-0.5">
+                                💡 {section.suggestion}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {canvas.length >= maxSections && (
+                      <div className="mt-3 p-2 bg-yellow-100 border border-yellow-300 rounded-lg">
+                        <p className="text-xs text-yellow-800">
+                          ⚠️ You've reached the recommended maximum of {maxSections} sections for this project type.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                 <h2 className="text-xl md:text-2xl font-bold text-slate-700">
@@ -2273,10 +2751,15 @@ const YarnOverApp = () => {
                 </h2>
                 <button
                   onClick={addSection}
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 transition-colors text-sm"
+                  disabled={canvas.length >= maxSections}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm ${
+                    canvas.length >= maxSections
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-slate-500 text-white hover:bg-slate-600'
+                  }`}
                 >
                   <Plus size={18} />
-                  Add Section
+                  Add Section {canvas.length >= maxSections && `(Max ${maxSections})`}
                 </button>
               </div>
 

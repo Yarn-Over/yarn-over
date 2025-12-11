@@ -318,13 +318,12 @@ const YarnOverApp = () => {
   const projectCategories = {
     scarves: { name: 'Scarves & Cowls', icon: '🧣', presets: ['scarf_standard', 'scarf_kids', 'scarf_extra_long', 'scarf_infinity', 'cowl', 'cowl_infinity', 'cowl_chunky'] },
     hats: { name: 'Hats & Headwear', icon: '🧢', presets: ['beanie', 'beanie_brim', 'beanie_slouchy', 'headband'] },
-    accessories: { name: 'Accessories', icon: '🧤', presets: ['fingerless_gloves', 'leg_warmers', 'hand_warmers'] },
-    home: { name: 'Home Goods', icon: '🏠', presets: ['dishcloth', 'potholder', 'placemat', 'coaster_set', 'pillow_cover', 'table_runner', 'hanging_towel'] },
+    accessories: { name: 'Accessories', icon: '🧤', presets: ['leg_warmers', 'cup_cozy'] },
+    home: { name: 'Home Goods', icon: '🏠', presets: ['dishcloth', 'potholder', 'placemat', 'coaster_set', 'table_runner', 'hanging_towel'] },
     blankets: { name: 'Blankets', icon: '🛋️', presets: ['baby_blanket', 'throw_blanket'] },
-    bags: { name: 'Bags & Cases', icon: '👜', presets: ['market_bag', 'project_bag', 'laptop_sleeve', 'tablet_case', 'phone_sock'] },
+    bags: { name: 'Bags', icon: '👜', presets: ['market_bag', 'project_bag'] },
     shawls: { name: 'Shawls & Wraps', icon: '🧶', presets: ['shawl_small', 'shawl_large'] },
-    seasonal: { name: 'Seasonal', icon: '🎄', presets: ['christmas_stocking'] },
-    quick: { name: 'Quick Projects', icon: '⚡', presets: ['bookmark', 'wash_mitt', 'cup_cozy', 'yoga_mat_strap'] }
+    quick: { name: 'Quick Projects', icon: '⚡', presets: ['bookmark', 'yoga_mat_strap'] }
   };
 
   // Project Presets with Descriptions AND Shaping Information
@@ -342,27 +341,18 @@ const YarnOverApp = () => {
     beanie_brim: { name: "Beanie with Extra Brim", width: 9, length: 10, info: "Extra cozy with a deep folded brim! The extended cuff means more warmth for your ears. Great for cold climates or just looking super snuggly!", examples: ['🧢'], shaping: 'hat_crown' },
     beanie_slouchy: { name: "Slouchy Beanie", width: 10, length: 12, info: "Laid-back style with room to spare! This slouchy beanie has extra length for that relaxed, fashionable drape. Popular with all ages!", examples: ['🧢'], shaping: 'hat_crown' },
     headband: { name: "Headband/Ear Warmer", width: 4, length: 18, info: "Quick knit for keeping ears warm! This headband (4\" × 18\") is perfect for those days when a full hat is too much. Great project for using leftover yarn!", examples: ['👑'], shaping: null },
-    fingerless_gloves: { name: "Fingerless Gloves", width: 7, length: 8, info: "Stay warm while texting! These fingerless gloves (7\" circumference × 8\" long) keep hands cozy while leaving fingers free. Perfect for writers, artists, or anyone who needs dexterity!", examples: ['🧤'], shaping: 'thumb_gusset' },
     dishcloth: { name: "Dishcloth", width: 8, length: 8, info: "Practical and pretty! A handmade dishcloth (8\" × 8\") is perfect for learning new stitches. Use cotton yarn for best absorption. Great gifts!", examples: ['🧽'], shaping: null },
     potholder: { name: "Potholder/Hot Pad", width: 8, length: 8, info: "Protect your counters in style! This potholder (8\" × 8\") uses double-thick cotton for heat protection. Add a hanging loop for convenience!", examples: ['🧽'], shaping: null },
     placemat: { name: "Placemat", width: 12, length: 18, info: "Dress up your table! A handmade placemat (12\" × 18\") adds personality to any meal. Use washable cotton for easy care.", examples: ['🍽️'], shaping: null },
     coaster_set: { name: "Coaster (Set of 4)", width: 4, length: 4, info: "Tiny but mighty! These coasters (4\" × 4\") are quick to make and perfect for gifts. Knit a set of 4-6 in coordinating colors!", examples: ['☕'], shaping: null },
-    pillow_cover: { name: "Pillow Cover", width: 16, length: 16, info: "Cozy up your space! This pillow cover (16\" × 16\") is knit flat and seamed, or can be knit in the round with an envelope closure. Choose a stitch that looks good on both sides!", examples: ['🛋️'], shaping: null },
     table_runner: { name: "Table Runner", width: 14, length: 48, info: "Elegant table decor! This runner (14\" × 48\") is perfect for dining tables or sideboards. Lace stitches look especially beautiful for this project!", examples: ['🍽️'], shaping: null },
     hanging_towel: { name: "Hanging Kitchen Towel", width: 12, length: 16, info: "Functional and decorative! Add a button loop at the top to hang from your oven door. Use absorbent cotton yarn. A thoughtful handmade gift!", examples: ['🧺'], shaping: null },
     baby_blanket: { name: "Baby Blanket", width: 36, length: 36, info: "Welcome a new little one! This baby blanket (36\" × 36\") is the perfect size for a car seat, stroller, or crib. Choose soft, washable yarn - babies are messy! A treasured handmade gift.", examples: ['👶'], shaping: null },
     throw_blanket: { name: "Throw Blanket/Afghan", width: 50, length: 60, info: "The ultimate cozy project! This throw (50\" × 60\") is perfect for couches, beds, or snuggling. It's a commitment (100+ hours) but so worth it. Great for using up a yarn stash!", examples: ['🛋️'], shaping: null },
-    market_bag: { name: "Market/Tote Bag", width: 14, length: 16, info: "Eco-friendly shopping in style! This sturdy tote (14\" × 16\") is perfect for groceries, books, or beach trips. Use tight stitches so things don't fall through!", examples: ['🛍️'], shaping: null },
-    project_bag: { name: "Project Bag (Small)", width: 10, length: 12, info: "Keep your knitting organized! This drawstring bag (10\" × 12\") is perfect for storing yarn and projects. Knitters making things for knitters - so meta!", examples: ['👜'], shaping: null },
-    laptop_sleeve: { name: "Laptop Sleeve", width: 12, length: 16, info: "Protect your tech with style! This padded sleeve (12\" × 16\") fits most 13\" laptops. Use tight stitches and consider adding a liner for extra cushioning.", examples: ['💻'], shaping: null },
-    tablet_case: { name: "Tablet/iPad Case", width: 8, length: 10, info: "Keep your tablet safe! This case (8\" × 10\") fits standard tablets. Add a button or zipper closure to keep it secure. Great gift for tech-loving friends!", examples: ['📱'], shaping: null },
-    phone_sock: { name: "Phone Sock/Cozy", width: 3, length: 6, info: "Tiny project, big impact! This phone cozy (3\" × 6\") protects your screen from scratches. Quick to knit - makes a great last-minute gift!", examples: ['📱'], shaping: null },
-    christmas_stocking: { name: "Christmas Stocking Panel", width: 8, length: 18, info: "Create a festive flat panel (8\" wide × 18\" long) to sew into a simple stocking! Knit two panels and seam together, leaving top open. Note: Creates basic envelope-style stocking - no heel/toe shaping. Perfect for beginners learning to construct items from flat pieces!", examples: ['🎄'], shaping: null },
-    scarf_infinity_gift: { name: "Infinity Scarf (Gift Size)", width: 10, length: 50, info: "The perfect gift scarf! This size (10\" × 50\") works for most adults and knits up relatively quickly. Join ends to create a cozy loop that anyone will love!", examples: ['🎁'], shaping: null },
+    market_bag: { name: "Market/Tote Bag", width: 14, length: 16, info: "Eco-friendly shopping in style! This sturdy tote (14\" wide × 16\" tall) features a flat base with corner gussets for structure. Perfect for groceries, books, or beach trips!", examples: ['🛍️'], shaping: 'bag_construction' },
+    project_bag: { name: "Project Bag (Small)", width: 10, length: 12, info: "Keep your knitting organized! This drawstring bag (10\" wide × 12\" tall) has a circular base and gathered top. Perfect for storing yarn and WIPs. Knitters making things for knitters - so meta!", examples: ['👜'], shaping: 'bag_construction' },
     bookmark: { name: "Bookmark", width: 2, length: 8, info: "Perfect for beginners or using up scraps! This bookmark (2\" × 8\") takes less than an hour to make. Add a tassel for extra flair. Great for book club gifts!", examples: ['📚'], shaping: null },
-    wash_mitt: { name: "Bath/Wash Mitt", width: 8, length: 10, info: "Spa vibes at home! This mitt (8\" × 10\") is knit flat and seamed, leaving one end open for your hand. Use cotton for the shower or wool for a cozy handwarmer!", examples: ['🧼'], shaping: null },
     leg_warmers: { name: "Leg Warmers", width: 12, length: 16, info: "80s style or practical warmth! These leg warmers (12\" circumference × 16\" long) are knit in the round like tall socks. Perfect for dancers, yoga, or just lounging!", examples: ['🧦'], shaping: null },
-    hand_warmers: { name: "Hand Warmer Panels (Pair)", width: 8, length: 4, info: "Create flat panels (8\" × 4\" each) to fold and seam into simple tubes! These quick rectangles take an evening to knit. Fold lengthwise and seam the long edge to create a tube for each hand. Perfect for using up leftover yarn!", examples: ['🧤'], shaping: null },
     cup_cozy: { name: "Cup Cozy/Sleeve", width: 10, length: 4, info: "Protect your hands from hot drinks! This cozy (10\" × 4\") wraps around your morning coffee. Add a button closure or leave it as a simple sleeve. Five-star gift for coffee lovers!", examples: ['☕'], shaping: null },
     yoga_mat_strap: { name: "Yoga Mat Strap", width: 3, length: 40, info: "Carry your mat in style! This strap (3\" × 40\") can be adjusted with buckles or simply tied. Use strong yarn like cotton or acrylic. Namaste!", examples: ['🧘'], shaping: null }
   };
@@ -409,6 +399,65 @@ const YarnOverApp = () => {
       sections,
       rounds: decreaseRounds,
       finalStitches: currentStitches
+    };
+  };
+
+  // Triangular Shaping Calculator (for shawls)
+  const calculateTriangularShaping = (finalWidth, stitchesPerInch) => {
+    const startingStitches = 3;
+    const targetStitches = Math.ceil(finalWidth * stitchesPerInch);
+    const stitchesToIncrease = targetStitches - startingStitches;
+    
+    // Increase 2 stitches every other row (one on each side)
+    const increaseRows = Math.ceil(stitchesToIncrease / 2);
+    const totalRows = increaseRows * 2; // Every other row
+    
+    const rows = [];
+    let currentStitches = startingStitches;
+    
+    for (let i = 1; i <= totalRows && currentStitches < targetStitches; i++) {
+      if (i % 2 === 1) {
+        // Increase row
+        rows.push({
+          row: i,
+          type: 'increase',
+          instruction: `K1, M1, knit to last stitch, M1, K1`,
+          stitchCount: currentStitches + 2
+        });
+        currentStitches += 2;
+      } else {
+        // Plain row
+        rows.push({
+          row: i,
+          type: 'plain',
+          instruction: 'Knit all stitches',
+          stitchCount: currentStitches
+        });
+      }
+    }
+    
+    return {
+      startingStitches,
+      finalStitches: currentStitches,
+      rows,
+      estimatedLength: Math.ceil(totalRows / (6 * 2)) // Approximate inches based on row gauge
+    };
+  };
+
+  // Bag Construction Calculator
+  const calculateBagConstruction = (width, height, stitchesPerInch, rowsPerInch) => {
+    const baseWidth = Math.ceil(width * stitchesPerInch);
+    const gussetDepth = Math.ceil((width * 0.25) * stitchesPerInch); // Gusset is 25% of width
+    const sideHeight = Math.ceil(height * rowsPerInch);
+    const handleLength = Math.ceil((width * 0.5) * stitchesPerInch); // Handle is 50% of bag width
+    
+    return {
+      baseWidth,
+      baseRows: Math.ceil((width * 0.25) * rowsPerInch), // Base is square (1/4 of width)
+      gussetDepth,
+      sideHeight,
+      handleLength,
+      handleRows: Math.ceil(12 * rowsPerInch) // 12 inches long
     };
   };
 
@@ -486,7 +535,9 @@ const YarnOverApp = () => {
     const preset = projectPresets[selectedPreset];
     const yarn = yarnWeights[yarnWeight];
     const isInRound = ['beanie', 'beanie_brim', 'beanie_slouchy', 'cowl', 'cowl_infinity', 'cowl_chunky', 'fingerless_gloves', 'leg_warmers'].some(key => selectedPreset.includes(key));
-    const hasShaping = preset.shaping === 'hat_crown';
+    const hasHatShaping = preset.shaping === 'hat_crown';
+    const hasTriangularShaping = preset.shaping === 'triangular';
+    const hasBagShaping = preset.shaping === 'bag_construction';
     
     let pattern = '';
     
@@ -523,17 +574,28 @@ const YarnOverApp = () => {
     pattern += `${stitchesPerInch} sts × ${rowsPerInch} rows = 1 inch in pattern stitch\n`;
     pattern += `(Gauge matters! Take the time to check yours matches this.)\n\n`;
     
-    if (hasShaping) {
+    if (hasHatShaping) {
       pattern += `FINISHED SIZE:\n`;
-      pattern += `${desiredWidth * 2 * Math.PI}\" circumference × ${desiredLength}\" tall (before crown)\n`;
+      pattern += `${Math.round(desiredWidth * 2 * Math.PI)}\" circumference × ${desiredLength}\" tall (before crown)\n`;
       pattern += `Fits average adult head (21-23\" circumference)\n\n`;
+    } else if (hasTriangularShaping) {
+      pattern += `FINISHED SIZE:\n`;
+      pattern += `Approximately ${desiredWidth}\" wide × ${desiredLength}\" long at center\n`;
+      pattern += `Triangle shape - starts with 3 stitches and increases to full width\n\n`;
+    } else if (hasBagShaping) {
+      pattern += `FINISHED SIZE:\n`;
+      pattern += `${desiredWidth}\" wide × ${desiredLength}\" tall\n`;
+      pattern += `Includes shaped base and handles\n\n`;
     }
     
     pattern += `════════════════════════════════════════════════════════════════\n`;
     pattern += `LET'S GET STARTED!\n`;
     pattern += `════════════════════════════════════════════════════════════════\n\n`;
     
-    if (isInRound) {
+    if (hasTriangularShaping) {
+      pattern += `Cast on 3 stitches.\n\n`;
+      pattern += `💡 Tip: We'll be increasing at the edges to create a triangle shape!\n\n`;
+    } else if (isInRound) {
       pattern += `Cast on ${width} stitches and join in the round, being careful not to\n`;
       pattern += `twist your stitches. Place a stitch marker to mark the beginning of\n`;
       pattern += `the round.\n\n`;
@@ -548,7 +610,7 @@ const YarnOverApp = () => {
       pattern += `your custom pattern!\n\n`;
     } else {
       canvas.forEach((section, index) => {
-        const sectionName = section.sectionName || (hasShaping && index === 0 ? 'Brim' : hasShaping && index === 1 ? 'Body' : `Section ${index + 1}`);
+        const sectionName = section.sectionName || (hasHatShaping && index === 0 ? 'Brim' : hasHatShaping && index === 1 ? 'Body' : hasTriangularShaping ? 'Shawl Body' : hasBagShaping && index === 0 ? 'Base' : hasBagShaping && index === 1 ? 'Sides' : `Section ${index + 1}`);
         
         pattern += `────────────────────────────────────────────────────────────────\n`;
         pattern += `${sectionName.toUpperCase()}\n`;
@@ -579,7 +641,7 @@ const YarnOverApp = () => {
         }
         
         // Timing guidance for hats
-        if (hasShaping) {
+        if (hasHatShaping) {
           if (sectionName.toLowerCase().includes('brim') || index === 0) {
             pattern += `Work in pattern for 2-3 inches (approximately 20-25 rounds).\n`;
             pattern += `This section takes about 30-45 minutes.\n\n`;
@@ -620,7 +682,7 @@ const YarnOverApp = () => {
       });
       
       // Add Crown Shaping for Hats
-      if (hasShaping) {
+      if (hasHatShaping) {
         const crownShaping = calculateHatCrown(width, stitchesPerInch);
         
         pattern += `────────────────────────────────────────────────────────────────\n`;
@@ -654,6 +716,88 @@ const YarnOverApp = () => {
         
         pattern += `This crown shaping takes about 30-45 minutes.\n\n`;
       }
+      
+      // Add Triangular Shaping for Shawls
+      if (hasTriangularShaping) {
+        const triangleShaping = calculateTriangularShaping(desiredWidth, stitchesPerInch);
+        
+        pattern += `────────────────────────────────────────────────────────────────\n`;
+        pattern += `TRIANGULAR SHAPING\n`;
+        pattern += `────────────────────────────────────────────────────────────────\n\n`;
+        
+        pattern += `Now we'll create the triangle shape by increasing at the edges!\n`;
+        pattern += `Starting with 3 stitches, we'll grow to ${triangleShaping.finalStitches} stitches.\n\n`;
+        
+        pattern += `💡 Tip: Use stitch markers at the beginning and end to help track\n`;
+        pattern += `where to place your increases. M1 = Make 1 (lift bar between\n`;
+        pattern += `stitches and knit into the back of it).\n\n`;
+        
+        pattern += `Work as follows:\n\n`;
+        
+        triangleShaping.rows.forEach((row) => {
+          if (row.type === 'increase') {
+            pattern += `   Row ${row.row} (RS): ${row.instruction} (${row.stitchCount} sts)\n`;
+          } else {
+            pattern += `   Row ${row.row} (WS): ${row.instruction}\n`;
+          }
+        });
+        
+        pattern += `\n`;
+        pattern += `Continue in this pattern (increasing every RS row) until your shawl\n`;
+        pattern += `reaches desired width, approximately ${desiredWidth}\" at the top edge.\n\n`;
+        
+        pattern += `When you reach desired size:\n`;
+        pattern += `Bind off loosely to maintain stretch and drape.\n\n`;
+        
+        pattern += `This shawl will grow quickly! Enjoy watching your triangle take shape.\n\n`;
+      }
+      
+      // Add Bag Construction Instructions
+      if (hasBagShaping) {
+        const bagConstruction = calculateBagConstruction(desiredWidth, desiredLength, stitchesPerInch, rowsPerInch);
+        
+        pattern += `────────────────────────────────────────────────────────────────\n`;
+        pattern += `BAG ASSEMBLY & HANDLES\n`;
+        pattern += `────────────────────────────────────────────────────────────────\n\n`;
+        
+        pattern += `Your bag pieces are complete! Now let's add structure and handles.\n\n`;
+        
+        pattern += `CREATING THE BAG SHAPE:\n\n`;
+        pattern += `1. Fold your rectangle in half, right sides together\n`;
+        pattern += `2. Seam the sides using mattress stitch\n`;
+        pattern += `3. For a flat bottom: Pinch corners and seam across\n`;
+        pattern += `   (about ${Math.round(desiredWidth * 0.25)}\" from corner) to create gusset\n`;
+        pattern += `4. Turn right side out\n\n`;
+        
+        pattern += `ADDING HANDLES:\n\n`;
+        pattern += `Option 1 - Knitted I-Cord Handles:\n`;
+        pattern += `• Cast on 4 stitches onto DPNs\n`;
+        pattern += `• *Knit 4, slide stitches to other end of needle; repeat from *\n`;
+        pattern += `• Continue for 12-14 inches\n`;
+        pattern += `• Make two handles\n`;
+        pattern += `• Sew securely to inside of bag, ${Math.round(desiredWidth * 0.2)}\" from side seams\n\n`;
+        
+        pattern += `Option 2 - Purchased Handles:\n`;
+        pattern += `• Use wooden, leather, or fabric handles from craft store\n`;
+        pattern += `• Fold top edge of bag over handle\n`;
+        pattern += `• Sew securely with matching yarn\n\n`;
+        
+        pattern += `Option 3 - Simple Strap Handles:\n`;
+        pattern += `• Cast on ${bagConstruction.handleLength} stitches\n`;
+        pattern += `• Work in garter stitch (knit every row) for 2-3 inches\n`;
+        pattern += `• Bind off\n`;
+        pattern += `• Make two straps\n`;
+        pattern += `• Sew to inside of bag, evenly spaced\n\n`;
+        
+        pattern += `💡 Tip: For extra strength, sew handles on with doubled yarn and\n`;
+        pattern += `make multiple passes. Handles take the most stress!\n\n`;
+        
+        pattern += `REINFORCEMENT (Optional but Recommended):\n`;
+        pattern += `• Add a fabric liner for structure\n`;
+        pattern += `• Use interfacing or canvas fabric cut to bag size\n`;
+        pattern += `• Hand-sew liner to top edge of bag\n`;
+        pattern += `• This prevents stretching and adds durability\n\n`;
+      }
     }
     
     pattern += `════════════════════════════════════════════════════════════════\n`;
@@ -661,7 +805,19 @@ const YarnOverApp = () => {
     pattern += `════════════════════════════════════════════════════════════════\n\n`;
     pattern += `You're almost done! Here's how to finish up:\n\n`;
     
-    if (!hasShaping) {
+    if (hasTriangularShaping) {
+      pattern += `1. Bind off all stitches VERY loosely (shawls need drape!)\n`;
+      pattern += `2. Weave in all ends\n`;
+      pattern += `3. Block your shawl by pinning to measurements and misting with water\n`;
+      pattern += `4. Let dry completely before unpinning\n`;
+      pattern += `\n💡 Blocking is essential for shawls - it opens up the lace and\n`;
+      pattern += `creates beautiful drape!\n`;
+    } else if (hasBagShaping) {
+      pattern += `1. Weave in all ends securely (bags get lots of use!)\n`;
+      pattern += `2. Block pieces flat before assembly if needed\n`;
+      pattern += `3. Follow assembly instructions above for seaming and handles\n`;
+      pattern += `4. Consider adding a fabric liner for extra strength\n`;
+    } else if (!hasHatShaping) {
       pattern += `1. Bind off all stitches loosely (you want this edge to have some\n`;
       pattern += `   stretch)\n`;
       pattern += `2. Weave in all your ends with a tapestry needle\n`;
@@ -708,7 +864,8 @@ const YarnOverApp = () => {
         'project_name': projectName,
         'yarn_weight': yarnWeight,
         'craft_type': selectedCraft,
-        'has_shaping': projectPresets[selectedPreset]?.shaping ? 'yes' : 'no'
+        'has_shaping': projectPresets[selectedPreset]?.shaping || 'none',
+        'shaping_type': projectPresets[selectedPreset]?.shaping || 'none'
       });
     }
   };

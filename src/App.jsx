@@ -771,6 +771,31 @@ const YarnOverApp = () => {
             {wizardStep === 4 && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-gray-800">Choose your stitch pattern</h2>
+                
+                {/* Knit/Crochet Toggle */}
+                <div className="flex gap-2 mb-4 justify-center">
+                  <button
+                    onClick={() => setSelectedCraft('knit')}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                      selectedCraft === 'knit'
+                        ? 'bg-purple-500 text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    🧶 Knitting
+                  </button>
+                  <button
+                    onClick={() => setSelectedCraft('crochet')}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                      selectedCraft === 'crochet'
+                        ? 'bg-pink-500 text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    🪡 Crochet
+                  </button>
+                </div>
+                
                 <p className="text-gray-600 mb-4">Drag a stitch below to get started!</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6 max-h-64 overflow-y-auto">
                   {getFilteredStitches().map(stitch => (
@@ -1016,6 +1041,30 @@ const YarnOverApp = () => {
               <h2 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
                 <span>📚</span> Stitch Library
               </h2>
+              
+              {/* Knit/Crochet Toggle */}
+              <div className="flex gap-2 mb-4 justify-center">
+                <button
+                  onClick={() => setSelectedCraft('knit')}
+                  className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                    selectedCraft === 'knit'
+                      ? 'bg-purple-500 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  🧶 Knitting
+                </button>
+                <button
+                  onClick={() => setSelectedCraft('crochet')}
+                  className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                    selectedCraft === 'crochet'
+                      ? 'bg-pink-500 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  🪡 Crochet
+                </button>
+              </div>
               
               {/* Category Filter */}
               <div className="flex gap-2 mb-4 overflow-x-auto pb-2">

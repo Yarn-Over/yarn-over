@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Plus, Trash2, X, Palette, GripVertical } from 'lucide-react';
+import { Download, Plus, Trash2, X, Palette, GripVertical, ChevronUp, ChevronDown } from 'lucide-react';
 
 const YarnOverApp = () => {
   // Core State
@@ -472,6 +472,22 @@ const YarnOverApp = () => {
     e.preventDefault();
   };
 
+  // Mobile: Tap to add stitch to canvas
+  const handleStitchClick = (stitch) => {
+    setCanvas([...canvas, { ...stitch, id: Date.now() }]);
+  };
+
+  // Mobile: Tap to move canvas items up/down
+  const moveCanvasItem = (index, direction) => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === canvas.length - 1) return;
+    
+    const newCanvas = [...canvas];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    [newCanvas[index], newCanvas[targetIndex]] = [newCanvas[targetIndex], newCanvas[index]];
+    setCanvas(newCanvas);
+  };
+
   const removeFromCanvas = (id) => {
     setCanvas(canvas.filter(item => item.id !== id));
   };
@@ -796,14 +812,17 @@ const YarnOverApp = () => {
                   </button>
                 </div>
                 
-                <p className="text-gray-600 mb-4">Drag a stitch below to get started!</p>
+                <p className="text-gray-600 mb-2 hidden md:block">Drag a stitch below to get started!</p>
+                <p className="text-gray-600 mb-2 md:hidden">Tap a stitch below to add it!</p>
+                <p className="text-xs text-gray-500 text-center mb-4">💡 Desktop: Drag | Mobile: Tap</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6 max-h-64 overflow-y-auto">
                   {getFilteredStitches().map(stitch => (
                     <div
                       key={stitch.id}
                       draggable
                       onDragStart={() => handleDragStart(stitch)}
-                      className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all cursor-move text-center"
+                      onClick={() => handleStitchClick(stitch)}
+                      className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer text-center"
                       style={{ backgroundColor: stitch.color }}
                     >
                       <div className="text-3xl mb-2">{stitch.symbol}</div>
@@ -821,16 +840,36 @@ const YarnOverApp = () => {
                   {canvas.length === 0 ? (
                     <div className="text-gray-500">
                       <Plus size={48} className="mx-auto mb-2 text-blue-400" />
-                      <p>Drag a stitch here to add it to your pattern</p>
+                      <p className="hidden md:block">Drag a stitch here to add it to your pattern</p>
+                      <p className="md:hidden">Tap a stitch above to add it here</p>
                     </div>
                   ) : (
                     <div className="w-full space-y-2">
-                      {canvas.map(item => (
+                      {canvas.map((item, index) => (
                         <div key={item.id} className="flex items-center justify-between p-3 bg-white rounded-lg shadow">
                           <span className="font-semibold">{item.name}</span>
-                          <button onClick={() => removeFromCanvas(item.id)} className="text-red-500 hover:text-red-700">
-                            <Trash2 size={18} />
-                          </button>
+                          <div className="flex items-center gap-2">
+                            {/* Mobile: Up/Down buttons */}
+                            <div className="flex flex-col md:hidden">
+                              <button
+                                onClick={() => moveCanvasItem(index, 'up')}
+                                disabled={index === 0}
+                                className={`p-1 ${index === 0 ? 'text-gray-300' : 'text-blue-500'}`}
+                              >
+                                <ChevronUp size={16} />
+                              </button>
+                              <button
+                                onClick={() => moveCanvasItem(index, 'down')}
+                                disabled={index === canvas.length - 1}
+                                className={`p-1 ${index === canvas.length - 1 ? 'text-gray-300' : 'text-blue-500'}`}
+                              >
+                                <ChevronDown size={16} />
+                              </button>
+                            </div>
+                            <button onClick={() => removeFromCanvas(item.id)} className="text-red-500 hover:text-red-700">
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -1083,6 +1122,11 @@ const YarnOverApp = () => {
                 ))}
               </div>
 
+              {/* Mobile Hint */}
+              <p className="text-xs text-gray-500 text-center mb-3">
+                💡 Desktop: Drag stitches | Mobile: Tap to add
+              </p>
+
               {/* Stitch Grid */}
               <div className="grid grid-cols-2 gap-3 max-h-[600px] overflow-y-auto pr-2">
                 {getFilteredStitches().map(stitch => (
@@ -1090,7 +1134,8 @@ const YarnOverApp = () => {
                     key={stitch.id}
                     draggable
                     onDragStart={() => handleDragStart(stitch)}
-                    className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all cursor-move"
+                    onClick={() => handleStitchClick(stitch)}
+                    className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer"
                     style={{ backgroundColor: stitch.color }}
                   >
                     <div className="text-center">
@@ -1130,8 +1175,10 @@ const YarnOverApp = () => {
                 {canvas.length === 0 ? (
                   <div className="text-center text-gray-400 py-20">
                     <Plus size={64} className="mx-auto mb-4 text-blue-300" />
-                    <p className="text-lg">Drag stitches here to build your pattern</p>
-                    <p className="text-sm mt-2">Drag to reorder!</p>
+                    <p className="text-lg hidden md:block">Drag stitches here to build your pattern</p>
+                    <p className="text-lg md:hidden">Tap stitches to add them here</p>
+                    <p className="text-sm mt-2 hidden md:block">Drag to reorder!</p>
+                    <p className="text-sm mt-2 md:hidden">Use ↑↓ buttons to reorder</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1146,7 +1193,7 @@ const YarnOverApp = () => {
                         style={{ borderLeft: `4px solid ${item.color}` }}
                       >
                         <div className="flex items-center gap-3">
-                          <GripVertical size={20} className="text-gray-400" />
+                          <GripVertical size={20} className="text-gray-400 hidden md:block" />
                           <div>
                             <div className="font-bold text-gray-800 flex items-center gap-2">
                               <span className="text-2xl">{item.symbol}</span>
@@ -1157,10 +1204,36 @@ const YarnOverApp = () => {
                             </div>
                           </div>
                         </div>
-                        <button
-                          onClick={() => removeFromCanvas(item.id)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        >
+                        <div className="flex items-center gap-2">
+                          {/* Mobile: Up/Down buttons */}
+                          <div className="flex flex-col md:hidden">
+                            <button
+                              onClick={() => moveCanvasItem(index, 'up')}
+                              disabled={index === 0}
+                              className={`p-1 rounded transition-colors ${
+                                index === 0
+                                  ? 'text-gray-300'
+                                  : 'text-blue-500 hover:bg-blue-50'
+                              }`}
+                            >
+                              <ChevronUp size={18} />
+                            </button>
+                            <button
+                              onClick={() => moveCanvasItem(index, 'down')}
+                              disabled={index === canvas.length - 1}
+                              className={`p-1 rounded transition-colors ${
+                                index === canvas.length - 1
+                                  ? 'text-gray-300'
+                                  : 'text-blue-500 hover:bg-blue-50'
+                              }`}
+                            >
+                              <ChevronDown size={18} />
+                            </button>
+                          </div>
+                          <button
+                            onClick={() => removeFromCanvas(item.id)}
+                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          >
                           <Trash2 size={20} />
                         </button>
                       </div>

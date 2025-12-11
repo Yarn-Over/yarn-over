@@ -1376,5 +1376,4 @@ const YarnOverApp = () => {
     </div>
   );
 };
-
 export default YarnOverApp;

@@ -795,6 +795,36 @@ const YarnOverApp = () => {
                 
                 <div className="space-y-4">
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Choose a Project</label>
+                    <select
+                      value={selectedPreset}
+                      onChange={(e) => {
+                        const presetKey = e.target.value;
+                        if (presetKey) {
+                          const preset = projectPresets[presetKey];
+                          setSelectedPreset(presetKey);
+                          setProjectName(preset.name);
+                          setDesiredWidth(preset.width);
+                          setDesiredLength(preset.length);
+                          setWidth(Math.ceil(preset.width * stitchesPerInch * 1.15));
+                        }
+                      }}
+                      className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-400 focus:outline-none"
+                    >
+                      <option value="">Select a project...</option>
+                      {Object.entries(projectCategories).map(([catKey, category]) => (
+                        <optgroup key={catKey} label={`${category.icon} ${category.name}`}>
+                          {category.presets.map((presetKey) => (
+                            <option key={presetKey} value={presetKey}>
+                              {projectPresets[presetKey].name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
                     <input
                       type="text"
@@ -1376,4 +1406,5 @@ const YarnOverApp = () => {
     </div>
   );
 };
+
 export default YarnOverApp;

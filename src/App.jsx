@@ -1234,8 +1234,9 @@ const YarnOverApp = () => {
                             onClick={() => removeFromCanvas(item.id)}
                             className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                           >
-                          <Trash2 size={20} />
-                        </button>
+                            <Trash2 size={20} />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>

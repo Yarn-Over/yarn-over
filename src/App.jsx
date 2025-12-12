@@ -606,12 +606,16 @@ const YarnOverApp = () => {
     pattern += `THE PATTERN:\n\n`;
     
     if (canvas.length === 0) {
-      pattern += `Choose your stitch pattern from the designer and add it to create\n`;
-      pattern += `your custom pattern!\n\n`;
-    } else if (hasTriangularShaping) {
-      // For triangular shaping, canvas is integrated into shaping section below
-      // Don't display canvas separately
-    } else {
+      if (hasTriangularShaping) {
+        // For triangular shaping with no canvas, use default garter stitch
+        pattern += `No stitch pattern selected - using Garter Stitch (recommended for\n`;
+        pattern += `first-time shawl makers!)\n\n`;
+      } else {
+        pattern += `Choose your stitch pattern from the designer and add it to create\n`;
+        pattern += `your custom pattern!\n\n`;
+      }
+    } else if (!hasTriangularShaping) {
+      // Only display canvas sections for non-triangular projects
       canvas.forEach((section, index) => {
         const sectionName = section.sectionName || (hasHatShaping && index === 0 ? 'Brim' : hasHatShaping && index === 1 ? 'Body' : hasTriangularShaping ? 'Shawl Body' : hasBagShaping && index === 0 ? 'Base' : hasBagShaping && index === 1 ? 'Sides' : `Section ${index + 1}`);
         
@@ -720,103 +724,6 @@ const YarnOverApp = () => {
         pattern += `This crown shaping takes about 30-45 minutes.\n\n`;
       }
       
-      // Add Triangular Shaping for Shawls - Integrated with Canvas Stitches
-      if (hasTriangularShaping && canvas.length > 0) {
-        const triangleShaping = calculateTriangularShaping(desiredWidth, stitchesPerInch);
-        const mainStitch = canvas[0]; // Use first stitch pattern for shawl body
-        
-        // Determine if pattern is simple or complex
-        const simplePatterns = ['garter', 'stockinette', 'seed'];
-        const isSimplePattern = simplePatterns.includes(mainStitch.id);
-        
-        pattern += `────────────────────────────────────────────────────────────────\n`;
-        pattern += `SHAWL BODY - ${mainStitch.name} with Triangular Shaping\n`;
-        pattern += `────────────────────────────────────────────────────────────────\n\n`;
-        
-        pattern += `We'll create the triangle shape while working in ${mainStitch.name}!\n`;
-        pattern += `Starting with 3 stitches, we'll grow to approximately ${triangleShaping.finalStitches} stitches.\n\n`;
-        
-        pattern += `💡 Tip: Use stitch markers at the beginning and end to help track\n`;
-        pattern += `where to place your increases. M1 = Make 1 (lift bar between\n`;
-        pattern += `stitches and knit into the back of it).\n\n`;
-        
-        // Provide pattern-specific instructions
-        if (mainStitch.id === 'garter') {
-          pattern += `GARTER STITCH TRIANGLE:\n`;
-          pattern += `This is the easiest shawl! All rows are knit.\n\n`;
-          pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
-          pattern += `   Row 2: Knit all stitches\n`;
-          pattern += `   Row 3 (RS): K1, M1, knit to last stitch, M1, K1 (7 sts)\n`;
-          pattern += `   Row 4: Knit all stitches\n`;
-          pattern += `   Row 5 (RS): K1, M1, knit to last stitch, M1, K1 (9 sts)\n`;
-          pattern += `   Row 6: Knit all stitches\n\n`;
-          pattern += `Continue in this manner, increasing 2 stitches every RS row and\n`;
-          pattern += `knitting every row, until shawl reaches ${desiredWidth}\" wide.\n\n`;
-        } else if (mainStitch.id === 'stockinette') {
-          pattern += `STOCKINETTE STITCH TRIANGLE:\n`;
-          pattern += `Creates a smooth, classic shawl.\n\n`;
-          pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
-          pattern += `   Row 2 (WS): Purl all stitches\n`;
-          pattern += `   Row 3 (RS): K1, M1, knit to last stitch, M1, K1 (7 sts)\n`;
-          pattern += `   Row 4 (WS): Purl all stitches\n`;
-          pattern += `   Row 5 (RS): K1, M1, knit to last stitch, M1, K1 (9 sts)\n`;
-          pattern += `   Row 6 (WS): Purl all stitches\n\n`;
-          pattern += `Continue in this manner: knit all stitches on RS rows (with increases\n`;
-          pattern += `at edges) and purl all stitches on WS rows until shawl reaches\n`;
-          pattern += `${desiredWidth}\" wide.\n\n`;
-        } else if (mainStitch.id === 'seed') {
-          pattern += `SEED STITCH TRIANGLE:\n`;
-          pattern += `Creates a lovely textured shawl.\n\n`;
-          pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
-          pattern += `   Row 2: *P1, K1; repeat from * to last st, P1\n`;
-          pattern += `   Row 3 (RS): K1, M1, work in seed st to last st, M1, K1 (7 sts)\n`;
-          pattern += `   Row 4: Work all stitches in seed stitch pattern\n`;
-          pattern += `   (if stitch shows as a knit, purl it; if it shows as a purl, knit it)\n\n`;
-          pattern += `💡 Tip: Keep the first and last stitch of each row in stockinette\n`;
-          pattern += `(K on RS, P on WS) for clean edges, working seed stitch in between.\n\n`;
-          pattern += `Continue increasing 2 stitches every RS row while maintaining seed\n`;
-          pattern += `stitch pattern until shawl reaches ${desiredWidth}\" wide.\n\n`;
-        } else {
-          // Complex patterns (ribbing, cables, lace)
-          pattern += `PATTERN STITCH TRIANGLE:\n`;
-          pattern += `We'll work ${mainStitch.name} while increasing for the triangle shape.\n\n`;
-          
-          pattern += `Starting Setup:\n`;
-          pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
-          pattern += `   Row 2 (WS): Work setup row for ${mainStitch.name}:\n`;
-          
-          // Show the first pattern row adapted for 5 stitches
-          if (mainStitch.pattern[0]) {
-            pattern += `      ${mainStitch.pattern[0].replace(/Row \d+ \((RS|WS)\): /, '').replace(/Row \d+: /, '')}\n`;
-          }
-          
-          pattern += `\n   Row 3 (RS): K1, M1, work in established pattern to last st, M1, K1 (7 sts)\n`;
-          pattern += `   Row 4 (WS): Work in pattern, incorporating new stitches\n\n`;
-          
-          pattern += `💡 IMPORTANT: As your triangle grows, you'll need to maintain the\n`;
-          pattern += `pattern in the center while adding new stitches at the edges.\n\n`;
-          
-          if (mainStitch.stitchMultiple > 1) {
-            pattern += `⚠️ NOTE: ${mainStitch.name} works on multiples of ${mainStitch.stitchMultiple} stitches.\n`;
-            pattern += `Keep the edge stitches in stockinette (K on RS, P on WS) until you\n`;
-            pattern += `have enough stitches to complete another pattern repeat. This creates\n`;
-            pattern += `a stockinette border that transitions into the pattern.\n\n`;
-          }
-          
-          pattern += `Continue increasing 2 stitches every RS row, working:\n`;
-          pattern += `• Edge stitches in stockinette stitch (K on RS, P on WS)\n`;
-          pattern += `• Center stitches in ${mainStitch.name}\n`;
-          pattern += `• Add new stitches to pattern as you have enough for full repeats\n\n`;
-          
-          pattern += `Work until shawl reaches ${desiredWidth}\" wide at the top edge.\n\n`;
-        }
-        
-        pattern += `FINISHING THE SHAWL:\n`;
-        pattern += `When you reach desired size (approximately ${triangleShaping.finalStitches} stitches):\n`;
-        pattern += `Bind off VERY loosely to maintain stretch and drape.\n\n`;
-        pattern += `This shawl will grow quickly! Enjoy watching your triangle take shape.\n\n`;
-      }
-      
       // Add Bag Construction Instructions
       if (hasBagShaping) {
         const bagConstruction = calculateBagConstruction(desiredWidth, desiredLength, stitchesPerInch, rowsPerInch);
@@ -863,6 +770,110 @@ const YarnOverApp = () => {
         pattern += `• Hand-sew liner to top edge of bag\n`;
         pattern += `• This prevents stretching and adds durability\n\n`;
       }
+    }
+    
+    // Add Triangular Shaping for Shawls - Integrated with Canvas Stitches
+    // This runs OUTSIDE the canvas display logic so it works whether canvas is shown or not
+    if (hasTriangularShaping) {
+      const triangleShaping = calculateTriangularShaping(desiredWidth, stitchesPerInch);
+      
+      // Use first canvas stitch if available, otherwise default to garter
+      const mainStitch = canvas.length > 0 ? canvas[0] : {
+        id: 'garter',
+        name: 'Garter Stitch',
+        pattern: ['Row 1: Knit all stitches']
+      };
+      
+      // Determine if pattern is simple or complex
+      const simplePatterns = ['garter', 'stockinette', 'seed'];
+      const isSimplePattern = simplePatterns.includes(mainStitch.id);
+      
+      pattern += `────────────────────────────────────────────────────────────────\n`;
+      pattern += `SHAWL BODY - ${mainStitch.name} with Triangular Shaping\n`;
+      pattern += `────────────────────────────────────────────────────────────────\n\n`;
+      
+      pattern += `We'll create the triangle shape while working in ${mainStitch.name}!\n`;
+      pattern += `Starting with 3 stitches, we'll grow to approximately ${triangleShaping.finalStitches} stitches.\n\n`;
+      
+      pattern += `💡 Tip: Use stitch markers at the beginning and end to help track\n`;
+      pattern += `where to place your increases. M1 = Make 1 (lift bar between\n`;
+      pattern += `stitches and knit into the back of it).\n\n`;
+      
+      // Provide pattern-specific instructions
+      if (mainStitch.id === 'garter') {
+        pattern += `GARTER STITCH TRIANGLE:\n`;
+        pattern += `This is the easiest shawl! All rows are knit.\n\n`;
+        pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
+        pattern += `   Row 2: Knit all stitches\n`;
+        pattern += `   Row 3 (RS): K1, M1, knit to last stitch, M1, K1 (7 sts)\n`;
+        pattern += `   Row 4: Knit all stitches\n`;
+        pattern += `   Row 5 (RS): K1, M1, knit to last stitch, M1, K1 (9 sts)\n`;
+        pattern += `   Row 6: Knit all stitches\n\n`;
+        pattern += `Continue in this manner, increasing 2 stitches every RS row and\n`;
+        pattern += `knitting every row, until shawl reaches ${desiredWidth}\" wide.\n\n`;
+      } else if (mainStitch.id === 'stockinette') {
+        pattern += `STOCKINETTE STITCH TRIANGLE:\n`;
+        pattern += `Creates a smooth, classic shawl.\n\n`;
+        pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
+        pattern += `   Row 2 (WS): Purl all stitches\n`;
+        pattern += `   Row 3 (RS): K1, M1, knit to last stitch, M1, K1 (7 sts)\n`;
+        pattern += `   Row 4 (WS): Purl all stitches\n`;
+        pattern += `   Row 5 (RS): K1, M1, knit to last stitch, M1, K1 (9 sts)\n`;
+        pattern += `   Row 6 (WS): Purl all stitches\n\n`;
+        pattern += `Continue in this manner: knit all stitches on RS rows (with increases\n`;
+        pattern += `at edges) and purl all stitches on WS rows until shawl reaches\n`;
+        pattern += `${desiredWidth}\" wide.\n\n`;
+      } else if (mainStitch.id === 'seed') {
+        pattern += `SEED STITCH TRIANGLE:\n`;
+        pattern += `Creates a lovely textured shawl.\n\n`;
+        pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
+        pattern += `   Row 2: *P1, K1; repeat from * to last st, P1\n`;
+        pattern += `   Row 3 (RS): K1, M1, work in seed st to last st, M1, K1 (7 sts)\n`;
+        pattern += `   Row 4: Work all stitches in seed stitch pattern\n`;
+        pattern += `   (if stitch shows as a knit, purl it; if it shows as a purl, knit it)\n\n`;
+        pattern += `💡 Tip: Keep the first and last stitch of each row in stockinette\n`;
+        pattern += `(K on RS, P on WS) for clean edges, working seed stitch in between.\n\n`;
+        pattern += `Continue increasing 2 stitches every RS row while maintaining seed\n`;
+        pattern += `stitch pattern until shawl reaches ${desiredWidth}\" wide.\n\n`;
+      } else {
+        // Complex patterns (ribbing, cables, lace)
+        pattern += `PATTERN STITCH TRIANGLE:\n`;
+        pattern += `We'll work ${mainStitch.name} while increasing for the triangle shape.\n\n`;
+        
+        pattern += `Starting Setup:\n`;
+        pattern += `   Row 1 (RS): K1, M1, K1, M1, K1 (5 sts)\n`;
+        pattern += `   Row 2 (WS): Work setup row for ${mainStitch.name}:\n`;
+        
+        // Show the first pattern row adapted for 5 stitches
+        if (mainStitch.pattern[0]) {
+          pattern += `      ${mainStitch.pattern[0].replace(/Row \d+ \((RS|WS)\): /, '').replace(/Row \d+: /, '')}\n`;
+        }
+        
+        pattern += `\n   Row 3 (RS): K1, M1, work in established pattern to last st, M1, K1 (7 sts)\n`;
+        pattern += `   Row 4 (WS): Work in pattern, incorporating new stitches\n\n`;
+        
+        pattern += `💡 IMPORTANT: As your triangle grows, you'll need to maintain the\n`;
+        pattern += `pattern in the center while adding new stitches at the edges.\n\n`;
+        
+        if (mainStitch.stitchMultiple > 1) {
+          pattern += `⚠️ NOTE: ${mainStitch.name} works on multiples of ${mainStitch.stitchMultiple} stitches.\n`;
+          pattern += `Keep the edge stitches in stockinette (K on RS, P on WS) until you\n`;
+          pattern += `have enough stitches to complete another pattern repeat. This creates\n`;
+          pattern += `a stockinette border that transitions into the pattern.\n\n`;
+        }
+        
+        pattern += `Continue increasing 2 stitches every RS row, working:\n`;
+        pattern += `• Edge stitches in stockinette stitch (K on RS, P on WS)\n`;
+        pattern += `• Center stitches in ${mainStitch.name}\n`;
+        pattern += `• Add new stitches to pattern as you have enough for full repeats\n\n`;
+        
+        pattern += `Work until shawl reaches ${desiredWidth}\" wide at the top edge.\n\n`;
+      }
+      
+      pattern += `FINISHING THE SHAWL:\n`;
+      pattern += `When you reach desired size (approximately ${triangleShaping.finalStitches} stitches):\n`;
+      pattern += `Bind off VERY loosely to maintain stretch and drape.\n\n`;
+      pattern += `This shawl will grow quickly! Enjoy watching your triangle take shape.\n\n`;
     }
     
     pattern += `════════════════════════════════════════════════════════════════\n`;

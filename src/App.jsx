@@ -441,6 +441,41 @@ const YarnOverApp = () => {
     };
   };
 
+  // Convert flat knitting patterns to in-the-round patterns
+  const convertToInTheRound = (stitch) => {
+    const flatPattern = stitch.pattern;
+    let circularPattern = [];
+    
+    // Special handling for common stitches when knitting in the round
+    if (stitch.id === 'stockinette') {
+      // Stockinette in the round: just knit every round (no purling!)
+      circularPattern = ['Knit all stitches'];
+      return { ...stitch, pattern: circularPattern, rowRepeat: 1 };
+    } else if (stitch.id === 'garter') {
+      // Garter in the round: alternate knit and purl rounds
+      circularPattern = ['Round 1: Knit all stitches', 'Round 2: Purl all stitches'];
+      return { ...stitch, pattern: circularPattern, rowRepeat: 2 };
+    } else if (stitch.id === 'seed') {
+      // Seed stitch in the round: alternate the pattern each round
+      circularPattern = [
+        'Round 1: *K1, P1; repeat from * to end',
+        'Round 2: *P1, K1; repeat from * to end'
+      ];
+      return { ...stitch, pattern: circularPattern, rowRepeat: 2 };
+    } else if (stitch.category === 'ribbing') {
+      // Ribbing in the round: knit the knits, purl the purls (same every round)
+      const firstRow = flatPattern[0].replace(/Row \d+ \((RS|WS)\): /, '').replace(/Row \d+: /, '');
+      circularPattern = [firstRow];
+      return { ...stitch, pattern: circularPattern, rowRepeat: 1 };
+    } else {
+      // For complex patterns, keep all rows but remove RS/WS labels
+      circularPattern = flatPattern.map(row => 
+        row.replace(/Row \d+ \((RS|WS)\): /, '').replace(/Row \d+: /, '')
+      );
+      return { ...stitch, pattern: circularPattern, rowRepeat: stitch.rowRepeat };
+    }
+  };
+
   // Bag Construction Calculator
   const calculateBagConstruction = (width, height, stitchesPerInch, rowsPerInch) => {
     const baseWidth = Math.ceil(width * stitchesPerInch);
@@ -650,34 +685,46 @@ const YarnOverApp = () => {
     } else if (!hasTriangularShaping) {
       // Only display canvas sections for non-triangular projects
       canvas.forEach((section, index) => {
-        const sectionName = section.sectionName || (hasHatShaping && index === 0 ? 'Brim' : hasHatShaping && index === 1 ? 'Body' : hasTriangularShaping ? 'Shawl Body' : hasBagShaping && index === 0 ? 'Base' : hasBagShaping && index === 1 ? 'Sides' : `Section ${index + 1}`);
+        // Convert pattern if knitting in the round
+        const displaySection = isInRound ? convertToInTheRound(section) : section;
+        
+        const sectionName = displaySection.sectionName || (hasHatShaping && index === 0 ? 'Brim' : hasHatShaping && index === 1 ? 'Body' : hasTriangularShaping ? 'Shawl Body' : hasBagShaping && index === 0 ? 'Base' : hasBagShaping && index === 1 ? 'Sides' : `Section ${index + 1}`);
         
         pattern += `────────────────────────────────────────────────────────────────\n`;
         pattern += `${sectionName.toUpperCase()}\n`;
         pattern += `────────────────────────────────────────────────────────────────\n\n`;
         
-        if (section.notes) {
-          pattern += `(${section.notes})\n\n`;
+        if (displaySection.notes) {
+          pattern += `(${displaySection.notes})\n\n`;
         }
         
-        pattern += `We'll be working in ${section.name} for this section. `;
-        if (section.difficulty === 'beginner') {
+        pattern += `We'll be working in ${displaySection.name} for this section. `;
+        if (displaySection.difficulty === 'beginner') {
           pattern += `This is a beginner-friendly\nstitch - you've got this!\n\n`;
-        } else if (section.difficulty === 'intermediate') {
+        } else if (displaySection.difficulty === 'intermediate') {
           pattern += `This pattern requires\nsome attention but is very rewarding!\n\n`;
         } else {
           pattern += `This is an advanced stitch -\ntake your time and enjoy the challenge!\n\n`;
         }
         
         pattern += `Work as follows:\n\n`;
-        section.pattern.forEach((row, i) => {
-          const rowLabel = isInRound ? `   Round ${i + 1}` : `   ${row}`;
-          pattern += `${isInRound ? rowLabel + ': ' + row.replace(/Row \d+ \((RS|WS)\): /, '').replace(/Row \d+: /, '') : rowLabel}\n`;
+        displaySection.pattern.forEach((row, i) => {
+          if (isInRound) {
+            // For in-the-round, show as "Round X:" if not already labeled
+            const hasRoundLabel = row.startsWith('Round');
+            if (hasRoundLabel) {
+              pattern += `   ${row}\n`;
+            } else {
+              pattern += `   Round ${i + 1}: ${row}\n`;
+            }
+          } else {
+            pattern += `   ${row}\n`;
+          }
         });
         pattern += `\n`;
         
-        if (section.notes && section.notes.includes('cable')) {
-          pattern += `${section.notes}\n\n`;
+        if (displaySection.notes && displaySection.notes.includes('cable')) {
+          pattern += `${displaySection.notes}\n\n`;
         }
         
         // Timing guidance for hats
@@ -709,7 +756,7 @@ const YarnOverApp = () => {
           pattern += `This is a large project - expect 50-100+ hours depending on size!\n\n`;
           pattern += `💡 Tip: Break it into sections. Celebrate every 10 inches!\n\n`;
         } else {
-          pattern += `\nRepeat these ${section.rowRepeat} ${isInRound ? 'round' : 'row'}${section.rowRepeat > 1 ? 's' : ''}`;
+          pattern += `\nRepeat these ${displaySection.rowRepeat} ${isInRound ? 'round' : 'row'}${displaySection.rowRepeat > 1 ? 's' : ''}`;
           pattern += ` until section measures\ndesired length`;
           if (desiredLength) {
             pattern += ` (about ${desiredLength} inches for this project).\n\n`;
@@ -717,7 +764,7 @@ const YarnOverApp = () => {
             pattern += `.\n\n`;
           }
           pattern += `💡 Tip: Place a stitch marker or note on paper each time you\n`;
-          pattern += `complete the ${section.rowRepeat}-${isInRound ? 'round' : 'row'} repeat to help you keep track!\n\n`;
+          pattern += `complete the ${displaySection.rowRepeat}-${isInRound ? 'round' : 'row'} repeat to help you keep track!\n\n`;
         }
       });
       

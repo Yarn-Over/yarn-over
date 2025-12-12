@@ -314,16 +314,13 @@ const YarnOverApp = () => {
     ]
   };
 
-  // Project Categories
+  // Project Categories - ONLY VERIFIED WORKING PROJECTS
   const projectCategories = {
-    scarves: { name: 'Scarves & Cowls', icon: '🧣', presets: ['scarf_standard', 'scarf_kids', 'scarf_extra_long', 'scarf_infinity', 'cowl', 'cowl_infinity', 'cowl_chunky'] },
-    hats: { name: 'Hats & Headwear', icon: '🧢', presets: ['beanie', 'beanie_brim', 'beanie_slouchy', 'headband'] },
-    accessories: { name: 'Accessories', icon: '🧤', presets: ['leg_warmers', 'cup_cozy'] },
-    home: { name: 'Home Goods', icon: '🏠', presets: ['dishcloth', 'potholder', 'placemat', 'coaster_set', 'table_runner', 'hanging_towel'] },
+    scarves: { name: 'Scarves', icon: '🧣', presets: ['scarf_standard', 'scarf_kids', 'scarf_extra_long'] },
+    hats: { name: 'Hats', icon: '🧢', presets: ['beanie', 'beanie_brim', 'beanie_slouchy', 'headband'] },
+    home: { name: 'Home Goods', icon: '🏠', presets: ['dishcloth', 'potholder', 'placemat', 'coaster_set'] },
     blankets: { name: 'Blankets', icon: '🛋️', presets: ['baby_blanket', 'throw_blanket'] },
-    bags: { name: 'Bags', icon: '👜', presets: ['market_bag', 'project_bag'] },
-    shawls: { name: 'Shawls & Wraps', icon: '🧶', presets: ['shawl_small', 'shawl_large'] },
-    quick: { name: 'Quick Projects', icon: '⚡', presets: ['bookmark', 'yoga_mat_strap'] }
+    quick: { name: 'Quick Projects', icon: '⚡', presets: ['bookmark'] }
   };
 
   // Project Presets with Descriptions AND Shaping Information
@@ -526,7 +523,7 @@ const YarnOverApp = () => {
   };
 
   const recalculateGauge = () => {
-    setWidth(Math.ceil(desiredWidth * stitchesPerInch * 1.15));
+    setWidth(Math.ceil(desiredWidth * stitchesPerInch));
   };
 
   // Pattern Generation with Crown Shaping
@@ -556,8 +553,43 @@ const YarnOverApp = () => {
     pattern += `════════════════════════════════════════════════════════════════\n\n`;
     
     pattern += `MATERIALS:\n`;
+    
+    // Calculate more accurate yarn estimates
+    let yardageEstimate;
+    if (hasHatShaping) {
+      // Hats: circumference × height × gauge, plus crown shaping
+      const bodyArea = (width / stitchesPerInch) * desiredLength;
+      const crownArea = (width / stitchesPerInch) * (desiredLength * 0.3); // Crown is ~30% of body length
+      const totalArea = bodyArea + crownArea;
+      yardageEstimate = Math.ceil(totalArea * stitchesPerInch * 1.5); // 1.5 yards per square inch for worsted
+    } else if (selectedPreset.includes('scarf')) {
+      // Scarves: width × length × density factor
+      const area = desiredWidth * desiredLength;
+      yardageEstimate = Math.ceil(area * 2.5); // 2.5 yards per square inch for scarves
+    } else if (selectedPreset.includes('blanket')) {
+      // Blankets: large area calculation
+      const area = desiredWidth * desiredLength;
+      yardageEstimate = Math.ceil(area * 2); // 2 yards per square inch
+    } else {
+      // Default: rectangular projects
+      const area = desiredWidth * desiredLength;
+      yardageEstimate = Math.ceil(area * 2);
+    }
+    
+    // Adjust for yarn weight
+    const yarnWeightMultiplier = {
+      'lace': 0.5,
+      'fingering': 0.6,
+      'sport': 0.75,
+      'dk': 0.85,
+      'worsted': 1.0,
+      'bulky': 1.3,
+      'super_bulky': 1.6
+    };
+    yardageEstimate = Math.ceil(yardageEstimate * yarnWeightMultiplier[yarnWeight]);
+    
     pattern += `• ${yarn.name} weight yarn\n`;
-    pattern += `  (you'll need about ${Math.ceil(desiredWidth * desiredLength * 0.5)} yards)\n\n`;
+    pattern += `  (approximately ${yardageEstimate} yards)\n\n`;
     
     pattern += `NEEDLES:\n`;
     pattern += `• ${selectedCraft === 'knit' ? yarn.needles : yarn.hooks}`;
@@ -575,8 +607,9 @@ const YarnOverApp = () => {
     pattern += `(Gauge matters! Take the time to check yours matches this.)\n\n`;
     
     if (hasHatShaping) {
+      const actualCircumference = Math.round(width / stitchesPerInch);
       pattern += `FINISHED SIZE:\n`;
-      pattern += `${Math.round(desiredWidth * 2 * Math.PI)}\" circumference × ${desiredLength}\" tall (before crown)\n`;
+      pattern += `${actualCircumference}\" circumference × ${desiredLength}\" tall (before crown)\n`;
       pattern += `Fits average adult head (21-23\" circumference)\n\n`;
     } else if (hasTriangularShaping) {
       pattern += `FINISHED SIZE:\n`;
@@ -650,13 +683,13 @@ const YarnOverApp = () => {
         // Timing guidance for hats
         if (hasHatShaping) {
           if (sectionName.toLowerCase().includes('brim') || index === 0) {
-            pattern += `Work in pattern for 2-3 inches (approximately 20-25 rounds).\n`;
-            pattern += `This section takes about 30-45 minutes.\n\n`;
+            pattern += `Work in pattern for 2-3 inches (approximately 15-20 rounds).\n`;
+            pattern += `This section takes about 45-60 minutes.\n\n`;
             pattern += `💡 Tip: Try on as you go! Everyone's head is different.\n\n`;
           } else if (sectionName.toLowerCase().includes('body') || index === 1) {
-            pattern += `Continue in pattern until body measures 5-6 inches from brim\n`;
-            pattern += `(approximately 45-50 rounds). This section takes about 2-3 hours.\n\n`;
-            pattern += `Your hat should measure about 7-8 inches total before starting crown.\n\n`;
+            pattern += `Continue in pattern until hat measures 6-7 inches total from brim\n`;
+            pattern += `(approximately 40-45 additional rounds). This section takes about 2-3 hours.\n\n`;
+            pattern += `Your hat should measure 6-7 inches total before starting crown.\n\n`;
           }
         } else if (selectedPreset.includes('scarf')) {
           pattern += `\nWork in pattern until scarf reaches desired length:\n`;
@@ -721,7 +754,7 @@ const YarnOverApp = () => {
         pattern += `4. Pull tight to close the crown\n`;
         pattern += `5. Secure with a few stitches on the inside\n\n`;
         
-        pattern += `This crown shaping takes about 30-45 minutes.\n\n`;
+        pattern += `This crown shaping takes about 60-90 minutes.\n\n`;
       }
       
       // Add Bag Construction Instructions
@@ -882,7 +915,7 @@ const YarnOverApp = () => {
     pattern += `You're almost done! Here's how to finish up:\n\n`;
     
     if (hasTriangularShaping) {
-      pattern += `1. Bind off all stitches VERY loosely (shawls need drape!)\n`;
+      pattern += `1. ${selectedCraft === 'crochet' ? 'Fasten off' : 'Bind off all stitches VERY loosely'} ${selectedCraft === 'knit' ? '(shawls need drape!)' : ''}\n`;
       pattern += `2. Weave in all ends\n`;
       pattern += `3. Block your shawl by pinning to measurements and misting with water\n`;
       pattern += `4. Let dry completely before unpinning\n`;
@@ -894,8 +927,7 @@ const YarnOverApp = () => {
       pattern += `3. Follow assembly instructions above for seaming and handles\n`;
       pattern += `4. Consider adding a fabric liner for extra strength\n`;
     } else if (!hasHatShaping) {
-      pattern += `1. Bind off all stitches loosely (you want this edge to have some\n`;
-      pattern += `   stretch)\n`;
+      pattern += `1. ${selectedCraft === 'crochet' ? 'Fasten off' : 'Bind off all stitches loosely (you want this edge to have some stretch)'}\n`;
       pattern += `2. Weave in all your ends with a tapestry needle\n`;
     } else {
       pattern += `1. Weave in all your ends with a tapestry needle\n`;
@@ -961,7 +993,17 @@ const YarnOverApp = () => {
     setProjectName(preset.name);
     setDesiredWidth(preset.width);
     setDesiredLength(preset.length);
-    setWidth(Math.ceil(preset.width * stitchesPerInch * 1.15));
+    
+    // For hats (in the round), width is diameter - calculate circumference
+    // Circumference = diameter × π, with 10% negative ease for snug fit
+    const isHat = ['beanie', 'beanie_brim', 'beanie_slouchy'].includes(presetKey);
+    if (isHat) {
+      const circumference = preset.width * Math.PI * 0.9; // 10% negative ease
+      setWidth(Math.ceil(circumference * stitchesPerInch));
+    } else {
+      setWidth(Math.ceil(preset.width * stitchesPerInch));
+    }
+    
     nextStep();
   };
 
@@ -969,7 +1011,7 @@ const YarnOverApp = () => {
     setYarnWeight(weight);
     setStitchesPerInch(yarnWeights[weight].gauge);
     setRowsPerInch(yarnWeights[weight].gauge * 1.33);
-    setWidth(Math.ceil(desiredWidth * yarnWeights[weight].gauge * 1.15));
+    setWidth(Math.ceil(desiredWidth * yarnWeights[weight].gauge));
     nextStep();
   };
 
@@ -990,6 +1032,15 @@ const YarnOverApp = () => {
             🧶 Yarn Over
           </h1>
           <p className="text-gray-600">Design Your Dream Pattern in Minutes</p>
+          
+          {/* ALPHA WARNING */}
+          <div className="mt-4 mx-auto max-w-2xl bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4">
+            <p className="text-yellow-800 font-semibold">⚠️ BETA VERSION - Please Review Patterns Carefully</p>
+            <p className="text-yellow-700 text-sm mt-1">
+              We're actively improving accuracy. Always check stitch counts, measurements, and gauge before starting your project. 
+              <a href="https://forms.gle/FnDRazzz7puzAaLt8" target="_blank" rel="noopener noreferrer" className="underline ml-1">Report issues here</a>
+            </p>
+          </div>
         </div>
 
         {/* Mode Toggle */}
@@ -1039,7 +1090,15 @@ const YarnOverApp = () => {
                           setProjectName(preset.name);
                           setDesiredWidth(preset.width);
                           setDesiredLength(preset.length);
-                          setWidth(Math.ceil(preset.width * stitchesPerInch * 1.15));
+                          
+                          // For hats, width is diameter - calculate circumference
+                          const isHat = ['beanie', 'beanie_brim', 'beanie_slouchy'].includes(presetKey);
+                          if (isHat) {
+                            const circumference = preset.width * Math.PI * 0.9; // 10% negative ease
+                            setWidth(Math.ceil(circumference * stitchesPerInch));
+                          } else {
+                            setWidth(Math.ceil(preset.width * stitchesPerInch));
+                          }
                         }
                       }}
                       className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-400 focus:outline-none"
